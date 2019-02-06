@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Capture Pointer Tester</string>
+    <string name="info_text">Pointer capture not active. Click on this button to activate.</string>
+    <string name="capture_info">Captured events will be displayed here.</string>
+</resources>
