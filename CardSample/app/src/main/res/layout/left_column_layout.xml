@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+  <RelativeLayout
+      android:id="@+id/left_column"
+      android:layout_width="@dimen/glass_card_left_column_width"
+      android:layout_height="match_parent"
+      android:gravity="center"
+      android:background="#303030"
+      >
+
+    <!-- Put widgets for the left column inside this RelativeLayout. -->
+
+  </RelativeLayout>
+
+  <RelativeLayout
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/glass_card_body_height"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentTop="true"
+      android:layout_marginLeft="@dimen/glass_card_two_column_margin"
+      android:layout_marginRight="@dimen/glass_card_margin"
+      android:layout_marginTop="@dimen/glass_card_margin"
+      android:layout_toRightOf="@+id/left_column"
+      android:id="@+id/right_column"
+      tools:ignore="UselessLeaf"
+      >
+
+  </RelativeLayout>
+
+  <LinearLayout
+      android:id="@+id/footer_container"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_alignParentRight="true"
+      android:layout_gravity="bottom|left"
+      android:layout_marginBottom="@dimen/glass_card_footer_margin"
+      android:layout_marginLeft="@dimen/glass_card_two_column_margin"
+      android:layout_marginRight="@dimen/glass_card_margin"
+      android:layout_toRightOf="@+id/left_column"
+      android:orientation="horizontal"
+      >
+
+    <!--
+         The footer view will grow to fit as much content as possible while the
+         timestamp view keeps a fixed width. If the footer text is too long, it
+         will be ellipsized with a 40px margin between it and the timestamp.
+    -->
+
+    <TextView
+        android:id="@+id/footer"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        />
+
+    <TextView
+        android:id="@+id/timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/glass_card_margin"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        />
+
+  </LinearLayout>
+
+</RelativeLayout>
