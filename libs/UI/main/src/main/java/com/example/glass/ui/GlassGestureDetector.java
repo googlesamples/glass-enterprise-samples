@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.glass.cardsample;
+package com.example.glass.ui;
 
 import android.content.Context;
 import android.view.GestureDetector;
@@ -28,7 +28,7 @@ public class GlassGestureDetector implements GestureDetector.OnGestureListener {
   /**
    * Currently handled gestures.
    */
-  enum Gesture {
+  public enum Gesture {
     TAP,
     SWIPE_FORWARD,
     SWIPE_BACKWARD,
@@ -39,7 +39,7 @@ public class GlassGestureDetector implements GestureDetector.OnGestureListener {
   /**
    * Listens for the gestures.
    */
-  interface OnGestureListener {
+  public interface OnGestureListener {
 
     /**
      * Should notify about detected gesture.

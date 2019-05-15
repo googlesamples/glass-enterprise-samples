@@ -21,10 +21,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import com.example.android.glass.cardsample.GlassGestureDetector.Gesture;
 import com.example.android.glass.cardsample.fragments.BaseFragment;
 import com.example.android.glass.cardsample.fragments.ColumnLayoutFragment;
 import com.example.android.glass.cardsample.fragments.MainLayoutFragment;
+import com.example.glass.ui.GlassGestureDetector.Gesture;
 import java.util.ArrayList;
 import java.util.List;
 

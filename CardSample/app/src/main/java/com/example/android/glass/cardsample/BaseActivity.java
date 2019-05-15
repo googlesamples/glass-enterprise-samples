@@ -21,8 +21,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
-import com.example.android.glass.cardsample.GlassGestureDetector.Gesture;
-import com.example.android.glass.cardsample.GlassGestureDetector.OnGestureListener;
+import com.example.glass.ui.GlassGestureDetector;
+import com.example.glass.ui.GlassGestureDetector.Gesture;
+import com.example.glass.ui.GlassGestureDetector.OnGestureListener;
 
 /**
  * Base activity which provides:
