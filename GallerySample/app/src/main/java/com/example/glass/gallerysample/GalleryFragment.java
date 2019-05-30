@@ -17,29 +17,29 @@
 package com.example.glass.gallerysample;
 
 import android.Manifest.permission;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.ContentObserver;
 import android.os.Bundle;
+import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import com.example.glass.gallerysample.databinding.GalleryLayoutBinding;
 import com.example.glass.ui.GlassGestureDetector;
 import com.example.glass.ui.GlassGestureDetector.Gesture;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
  * Shows horizontal scrolling list of the stored photos and videos or information about the empty
  * gallery.
  */
-public class GalleryFragment extends Fragment implements GlassGestureDetector.OnGestureListener {
-
+public class GalleryFragment extends Fragment implements GlassGestureDetector.OnGestureListener,
+    GalleryItemsListener {
 
   /**
    * Request code for the gallery permissions. This value doesn't have any special meaning.
@@ -47,9 +47,19 @@ public class GalleryFragment extends Fragment implements GlassGestureDetector.On
   private static final int REQUEST_PERMISSION_CODE = 200;
 
   /**
-   * List of the gallery items (photos and videos).
+   * Background handler thread name.
    */
-  private final List<GalleryItem> galleryItems = new ArrayList<>();
+  private static final String BACKGROUND_HANDLER_THREAD_NAME = "gallery_background_thread";
+
+  /**
+   * Gallery model containing all available {@link GalleryItem}s.
+   */
+  private final GalleryModel galleryModel = new GalleryModel();
+
+  /**
+   * Background handler thread for the {@link ContentObserver}.
+   */
+  private HandlerThread handlerThread = new HandlerThread(BACKGROUND_HANDLER_THREAD_NAME);
 
   /**
    * String array of necessary gallery permissions.
@@ -57,24 +67,31 @@ public class GalleryFragment extends Fragment implements GlassGestureDetector.On
   private String[] permissions = {permission.READ_EXTERNAL_STORAGE,
       permission.WRITE_EXTERNAL_STORAGE};
 
-  /**
-   * Text view informing that the gallery is empty.
-   */
-  private TextView emptyGalleryTextView;
+  private Context context;
+  private GalleryViewHelper galleryViewHelper;
+  private GalleryItemsProvider galleryItemsProvider;
 
   @Nullable
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.gallery_layout, container, false);
+    final GalleryLayoutBinding galleryLayoutBinding = GalleryLayoutBinding
+        .inflate(inflater, container, false);
+    galleryLayoutBinding.setGalleryModel(galleryModel);
+    return galleryLayoutBinding.getRoot();
   }
 
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    emptyGalleryTextView = view.findViewById(R.id.emptyGalleryTextView);
-    emptyGalleryTextView.setVisibility(View.VISIBLE);
-    emptyGalleryTextView.setText(getString(R.string.empty_gallery));
+    galleryViewHelper = new GalleryViewHelper(view, galleryModel.getItems());
+  }
+
+  @Override
+  public void onAttach(Context context) {
+    super.onAttach(context);
+    this.context = context;
+    handlerThread.start();
   }
 
   @Override
@@ -88,13 +105,20 @@ public class GalleryFragment extends Fragment implements GlassGestureDetector.On
         return;
       }
     }
+    initializeGallery();
+  }
+
+  @Override
+  public void onDetach() {
+    super.onDetach();
+    handlerThread.quit();
   }
 
   @Override
   public boolean onGesture(Gesture glassGesture) {
     switch (glassGesture) {
       case TAP:
-        if (galleryItems.isEmpty()) {
+        if (galleryModel.isGalleryEmpty()) {
           return false;
         }
       default:
@@ -109,10 +133,43 @@ public class GalleryFragment extends Fragment implements GlassGestureDetector.On
       for (int result : grantResults) {
         if (result != PackageManager.PERMISSION_GRANTED) {
           Objects.requireNonNull(getActivity(), "Activity must not be null").finish();
+          return;
         }
       }
+      initializeGallery();
     } else {
       super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+  }
+
+  @Override
+  public void onItemFound(GalleryItem galleryItem) {
+    galleryModel.addItem(galleryItem);
+    notifyDataSetChanged();
+  }
+
+  @Override
+  public void onEmptyList() {
+    galleryModel.clearItems();
+    if (galleryViewHelper != null) {
+      notifyDataSetChanged();
+    }
+  }
+
+  private void notifyDataSetChanged() {
+    if (isAdded()) {
+      requireActivity().runOnUiThread((new Runnable() {
+        @Override
+        public void run() {
+          galleryViewHelper.notifyDataSetChanged();
+        }
+      }));
+    }
+  }
+
+  private void initializeGallery() {
+    galleryModel.clearItems();
+    galleryItemsProvider = new GalleryItemsProvider(context, handlerThread, this);
+    galleryItemsProvider.loadGalleryItems();
   }
 }

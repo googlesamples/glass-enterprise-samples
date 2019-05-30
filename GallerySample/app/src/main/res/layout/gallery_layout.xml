@@ -14,25 +14,33 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/GalleryStyle">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <android.support.v7.widget.RecyclerView
-      android:id="@+id/recyclerView"
-      style="@style/GalleryStyle.RecyclerView"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"/>
+  <data>
+    <import type="android.view.View" />
+    <variable
+        name="galleryModel"
+        type="com.example.glass.gallerysample.GalleryModel" />
+  </data>
+  <android.support.constraint.ConstraintLayout style="@style/GalleryStyle">
 
-  <TextView
-      android:id="@+id/emptyGalleryTextView"
-      style="@style/GalleryTextViewStyle.EmptyGallery"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        style="@style/GalleryStyle.RecyclerView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/emptyGalleryTextView"
+        style="@style/GalleryTextViewStyle.EmptyGallery"
+        android:visibility="@{galleryModel.galleryEmpty ? View.VISIBLE : View.GONE}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+  </android.support.constraint.ConstraintLayout>
+</layout>
