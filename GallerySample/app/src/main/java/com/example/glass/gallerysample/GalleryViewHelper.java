@@ -16,9 +16,11 @@
 
 package com.example.glass.gallerysample;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.support.v7.widget.SnapHelper;
 import android.view.View;
 import java.util.List;
@@ -31,6 +33,7 @@ public class GalleryViewHelper {
   private final SnapHelper snapHelper = new LinearSnapHelper();
   private final LinearLayoutManager layoutManager;
   private final RecyclerViewAdapter recyclerViewAdapter;
+  private int currentGalleryItemIndex;
 
   /**
    * Creates {@link GalleryViewHelper} object using {@link List<GalleryItem>}. Sets horizontal
@@ -50,7 +53,24 @@ public class GalleryViewHelper {
     recyclerView.setOnFlingListener(snapHelper);
     recyclerView.setHasFixedSize(true);
 
+    recyclerView.addOnScrollListener(new OnScrollListener() {
+      @Override
+      public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+        final View foundView = snapHelper.findSnapView(layoutManager);
+        if (foundView == null) {
+          return;
+        }
+        currentGalleryItemIndex = layoutManager.getPosition(foundView);
+      }
+    });
     recyclerView.addItemDecoration(new GalleryItemDecoration(view.getResources()));
+  }
+
+  /**
+   * Returns current gallery item index.
+   */
+  public int getCurrentGalleryItemIndex() {
+    return currentGalleryItemIndex;
   }
 
   /**

@@ -17,4 +17,6 @@
 <resources>
   <string name="app_name">Gallery Sample</string>
   <string name="empty_gallery">Gallery is empty</string>
+  <string name="gallery_item">Gallery item</string>
+  <string name="picture">Picture</string>
 </resources>

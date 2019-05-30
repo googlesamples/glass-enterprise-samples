@@ -16,35 +16,25 @@
 
 package com.example.glass.gallerysample;
 
-import android.Manifest.permission;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.os.Bundle;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.example.glass.gallerysample.databinding.GalleryLayoutBinding;
-import com.example.glass.ui.GlassGestureDetector;
 import com.example.glass.ui.GlassGestureDetector.Gesture;
-import java.util.Objects;
+import com.example.glass.ui.GlassGestureDetector.OnGestureListener;
 
 /**
  * Shows horizontal scrolling list of the stored photos and videos or information about the empty
  * gallery.
  */
-public class GalleryFragment extends Fragment implements GlassGestureDetector.OnGestureListener,
-    GalleryItemsListener {
-
-  /**
-   * Request code for the gallery permissions. This value doesn't have any special meaning.
-   */
-  private static final int REQUEST_PERMISSION_CODE = 200;
+public class GalleryFragment extends Fragment implements OnGestureListener, GalleryItemsListener {
 
   /**
    * Background handler thread name.
@@ -61,15 +51,9 @@ public class GalleryFragment extends Fragment implements GlassGestureDetector.On
    */
   private HandlerThread handlerThread = new HandlerThread(BACKGROUND_HANDLER_THREAD_NAME);
 
-  /**
-   * String array of necessary gallery permissions.
-   */
-  private String[] permissions = {permission.READ_EXTERNAL_STORAGE,
-      permission.WRITE_EXTERNAL_STORAGE};
-
-  private Context context;
   private GalleryViewHelper galleryViewHelper;
   private GalleryItemsProvider galleryItemsProvider;
+  private OnGalleryItemSelectedListener onGalleryItemSelectedListener;
 
   @Nullable
   @Override
@@ -90,22 +74,16 @@ public class GalleryFragment extends Fragment implements GlassGestureDetector.On
   @Override
   public void onAttach(Context context) {
     super.onAttach(context);
-    this.context = context;
     handlerThread.start();
+    galleryModel.clearItems();
+    galleryItemsProvider = new GalleryItemsProvider(context, handlerThread, this);
+    galleryItemsProvider.loadGalleryItems();
   }
 
   @Override
-  public void onStart() {
-    super.onStart();
-    for (String permission : permissions) {
-      if (ContextCompat
-          .checkSelfPermission(Objects.requireNonNull(getActivity(), "Activity must not be null"),
-              permission) != PackageManager.PERMISSION_GRANTED) {
-        requestPermissions(permissions, REQUEST_PERMISSION_CODE);
-        return;
-      }
-    }
-    initializeGallery();
+  public void onResume() {
+    super.onResume();
+    ((BaseActivity) requireActivity()).setOnGestureListener(this);
   }
 
   @Override
@@ -121,24 +99,15 @@ public class GalleryFragment extends Fragment implements GlassGestureDetector.On
         if (galleryModel.isGalleryEmpty()) {
           return false;
         }
+        final GalleryItem currentGalleryItem = galleryModel.getItems()
+            .get(galleryViewHelper.getCurrentGalleryItemIndex());
+        onGalleryItemSelectedListener.onGalleryItemSelected(currentGalleryItem);
+        return true;
+      case SWIPE_DOWN:
+        requireActivity().finish();
+        return true;
       default:
         return false;
-    }
-  }
-
-  @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-      @NonNull int[] grantResults) {
-    if (requestCode == REQUEST_PERMISSION_CODE) {
-      for (int result : grantResults) {
-        if (result != PackageManager.PERMISSION_GRANTED) {
-          Objects.requireNonNull(getActivity(), "Activity must not be null").finish();
-          return;
-        }
-      }
-      initializeGallery();
-    } else {
-      super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
   }
 
@@ -156,6 +125,13 @@ public class GalleryFragment extends Fragment implements GlassGestureDetector.On
     }
   }
 
+  /**
+   * Sets the {@link OnGalleryItemSelectedListener} listener for this fragment.
+   */
+  public void setOnGalleryItemSelectedListener(OnGalleryItemSelectedListener listener) {
+    this.onGalleryItemSelectedListener = listener;
+  }
+
   private void notifyDataSetChanged() {
     if (isAdded()) {
       requireActivity().runOnUiThread((new Runnable() {
@@ -167,9 +143,11 @@ public class GalleryFragment extends Fragment implements GlassGestureDetector.On
     }
   }
 
-  private void initializeGallery() {
-    galleryModel.clearItems();
-    galleryItemsProvider = new GalleryItemsProvider(context, handlerThread, this);
-    galleryItemsProvider.loadGalleryItems();
+  /**
+   * Interface to notify parent that {@link GalleryItem} has been selected.
+   */
+  interface OnGalleryItemSelectedListener {
+
+    void onGalleryItemSelected(GalleryItem galleryItem);
   }
 }

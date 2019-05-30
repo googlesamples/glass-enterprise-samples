@@ -18,6 +18,8 @@ package com.example.glass.gallerysample;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -57,6 +59,13 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGestur
     glassGestureDetector = new GlassGestureDetector(this, this);
   }
 
+  /**
+   * Sets new {@link OnGestureListener} on the {@link GlassGestureDetector} object.
+   */
+  public void setOnGestureListener(OnGestureListener onGestureListener) {
+    glassGestureDetector = new GlassGestureDetector(this, onGestureListener);
+  }
+
   @Override
   protected void onResume() {
     super.onResume();
@@ -80,6 +89,19 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGestur
       default:
         return false;
     }
+  }
+
+  /**
+   * Helper method for the {@link Fragment} replacement in the container. Depends on the given flag,
+   * fragment can be added to the back stack.
+   */
+  public void replaceFragment(Fragment fragment, boolean addToBackStack) {
+    final FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+    fragmentTransaction.replace(R.id.container, fragment);
+    if (addToBackStack) {
+      fragmentTransaction.addToBackStack(fragment.toString());
+    }
+    fragmentTransaction.commit();
   }
 
   private void hideSystemUI() {
