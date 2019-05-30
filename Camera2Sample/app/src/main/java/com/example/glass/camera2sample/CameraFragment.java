@@ -38,13 +38,15 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import com.example.glass.camera2sample.GlassGestureDetector.Gesture;
 import com.example.glass.camera2sample.GlassGestureDetector.OnGestureListener;
+import com.example.glass.camera2sample.CameraActionHandler.CameraActionHandlerCallback;
+import com.example.glass.camera2sample.CameraActionHandler.CameraMode;
 import java.util.Objects;
 
 /**
  * Fragment responsible for displaying the camera preview and handling camera actions.
  */
 public class CameraFragment extends Fragment
-    implements OnRequestPermissionsResultCallback, OnGestureListener {
+    implements OnRequestPermissionsResultCallback, OnGestureListener, CameraActionHandlerCallback {
 
   private static final String TAG = CameraFragment.class.getSimpleName();
 
@@ -132,7 +134,7 @@ public class CameraFragment extends Fragment
   @Override
   public void onActivityCreated(@Nullable Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
-    cameraActionHandler = new CameraActionHandler(getContext());
+    cameraActionHandler = new CameraActionHandler(getContext(), this);
   }
 
   @Override
@@ -188,8 +190,48 @@ public class CameraFragment extends Fragment
       case TAP:
         cameraActionHandler.performTapAction();
         return true;
+      case SWIPE_FORWARD:
+        cameraActionHandler.performSwipeForwardAction();
+        return true;
+      case SWIPE_BACKWARD:
+        cameraActionHandler.performSwipeBackwardAction();
+        return true;
+      case SWIPE_DOWN:
+        Objects.requireNonNull(getActivity()).finish();
+        return true;
       default:
         return false;
+    }
+  }
+
+  @Override
+  public void onTakingPictureStarted() {
+    Log.d(TAG, "Taking picture started");
+    AnimationManager.animateShutter(getContext(), shutterImageView);
+  }
+
+  @Override
+  public void onVideoRecordingStarted() {
+    Log.d(TAG, "Video recording started");
+    AnimationManager.changeImageByAlpha(shutterImageView, R.drawable.ic_videocam_red_96dp);
+  }
+
+  @Override
+  public void onVideoRecordingStopped() {
+    Log.d(TAG, "Video recording stopped");
+    AnimationManager.changeImageByAlpha(shutterImageView, R.drawable.ic_videocam_white_96dp);
+  }
+
+  @Override
+  public void onCameraModeChanged(CameraMode newCameraMode) {
+    Log.d(TAG, "Camera mode changed to " + newCameraMode.name());
+    switch (newCameraMode) {
+      case VIDEO:
+        AnimationManager.changeImageByAlpha(shutterImageView, R.drawable.ic_videocam_white_96dp);
+        break;
+      case PICTURE:
+        AnimationManager.changeImageByAlpha(shutterImageView, R.drawable.ic_camera_white_96dp);
+        break;
     }
   }
 

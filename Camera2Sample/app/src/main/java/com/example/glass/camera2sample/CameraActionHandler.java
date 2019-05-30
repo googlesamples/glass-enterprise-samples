@@ -34,6 +34,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.Surface;
 import android.widget.Toast;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -84,6 +85,11 @@ public class CameraActionHandler implements OnImageAvailableListener {
   private final CameraManager cameraManager;
 
   /**
+   * Callback for the {@link CameraActionHandler}.
+   */
+  private final CameraActionHandlerCallback cameraActionHandlerCallback;
+
+  /**
    * ID of the current {@link CameraDevice}.
    */
   private String cameraId;
@@ -109,9 +115,24 @@ public class CameraActionHandler implements OnImageAvailableListener {
   private Surface previewSurface;
 
   /**
+   * Current mode of the camera application. {@link CameraMode#PICTURE} is a default mode.
+   */
+  private CameraMode cameraMode = CameraMode.PICTURE;
+
+  /**
+   * Provides functionality of video recording.
+   */
+  private VideoRecorder videoRecorder;
+
+  /**
    * Creates {@link CameraCaptureSession} for a given parameters.
    */
   private CameraCaptureSessionFactory cameraCaptureSessionFactory;
+
+  /**
+   * Flag indicating if video capture session is preparing.
+   */
+  private boolean isVideoCaptureSessionPreparing = false;
 
   /**
    * {@link CameraDevice.StateCallback} is called when {@link CameraDevice} changes its state.
@@ -146,8 +167,10 @@ public class CameraActionHandler implements OnImageAvailableListener {
   /**
    * Creates {@link CameraActionHandler} object using {@link Context}.
    */
-  public CameraActionHandler(Context context) {
+  public CameraActionHandler(Context context,
+      CameraActionHandlerCallback cameraActionHandlerCallback) {
     this.context = context;
+    this.cameraActionHandlerCallback = cameraActionHandlerCallback;
     backgroundThreadHandler = new BackgroundThreadHandler(BACKGROUND_THREAD_NAME);
     cameraManager = (CameraManager) Objects.requireNonNull(context, "Context must not be null")
         .getSystemService(Context.CAMERA_SERVICE);
@@ -183,6 +206,10 @@ public class CameraActionHandler implements OnImageAvailableListener {
     try {
       cameraOpenCloseLock.acquire();
       cameraCaptureSessionController.closeSession();
+      if (videoRecorder != null && videoRecorder.isRecording()) {
+        stopRecording();
+        videoRecorder.releaseMediaRecorder();
+      }
       if (cameraDevice != null) {
         Log.d(TAG, "Closing camera device");
         cameraDevice.close();
@@ -217,7 +244,51 @@ public class CameraActionHandler implements OnImageAvailableListener {
    * Performs action on {@link com.example.glass.ui.GlassGestureDetector.Gesture#TAP} gesture.
    */
   public void performTapAction() {
-    takePicture();
+    switch (cameraMode) {
+      case PICTURE:
+        takePicture();
+        break;
+      case VIDEO:
+        if (isVideoCaptureSessionPreparing) {
+          return;
+        }
+        isVideoCaptureSessionPreparing = true;
+        if (videoRecorder.isRecording()) {
+          stopRecording();
+          createCameraPreviewSession();
+        } else {
+          startRecording();
+        }
+        break;
+    }
+  }
+
+  /**
+   * Performs action on {@link com.example.glass.ui.GlassGestureDetector.Gesture#SWIPE_FORWARD}
+   * gesture.
+   */
+  public void performSwipeForwardAction() {
+    Log.d(TAG, "Performing swipe forward action");
+    if (cameraMode == CameraMode.PICTURE) {
+      cameraMode = CameraMode.VIDEO;
+      videoRecorder = new VideoRecorder();
+      cameraActionHandlerCallback.onCameraModeChanged(cameraMode);
+    }
+  }
+
+  /**
+   * Performs action on {@link com.example.glass.ui.GlassGestureDetector.Gesture#SWIPE_BACKWARD}
+   * gesture.
+   */
+  public void performSwipeBackwardAction() {
+    Log.d(TAG, "Performing swipe backward action");
+    if (cameraMode == CameraMode.VIDEO && !videoRecorder.isRecording()) {
+      cameraMode = CameraMode.PICTURE;
+      if (videoRecorder != null) {
+        videoRecorder.releaseMediaRecorder();
+      }
+      cameraActionHandlerCallback.onCameraModeChanged(cameraMode);
+    }
   }
 
   /**
@@ -232,6 +303,7 @@ public class CameraActionHandler implements OnImageAvailableListener {
    */
   private void takePicture() {
     Log.d(TAG, "Taking picture");
+    cameraActionHandlerCallback.onTakingPictureStarted();
     cameraCaptureSessionController.captureStillPicture(
         Objects.requireNonNull(imageReaderProvider.getImageReader(), "ImageReader must not be null")
             .getSurface(), new CaptureCallback() {
@@ -254,7 +326,63 @@ public class CameraActionHandler implements OnImageAvailableListener {
   }
 
   /**
-   * Creates a new {@link CameraCaptureSession} for camera preview.
+   * Closes preview session and using {@link VideoRecorder} prepares to the record and starts
+   * recording video.
+   */
+  private void startRecording() {
+    Log.d(TAG, "Starting recording");
+    cameraActionHandlerCallback.onVideoRecordingStarted();
+    closePreviewSession();
+    // Set up Surface for the MediaRecorder
+    videoRecorder.initRecorder();
+    videoRecorder.prepareRecorder();
+    Surface recorderSurface = videoRecorder.getSurface();
+
+    final List<Surface> surfaces = new ArrayList<>();
+    surfaces.add(previewSurface);
+    surfaces.add(recorderSurface);
+
+    cameraCaptureSessionFactory
+        .createCaptureSession(surfaces, new StateCallback() {
+          @Override
+          public void onConfigured(@NonNull CameraCaptureSession session) {
+            Log.d(TAG, "TEMPLATE_RECORD capture session configured");
+            cameraCaptureSessionController.setSession(session);
+            cameraCaptureSessionController
+                .createPreviewSession(CameraDevice.TEMPLATE_RECORD, surfaces);
+            videoRecorder.startRecording();
+            isVideoCaptureSessionPreparing = false;
+          }
+
+          @Override
+          public void onConfigureFailed(@NonNull CameraCaptureSession session) {
+            Log.e(TAG, "TEMPLATE_RECORD capture session configuration failed");
+          }
+        });
+  }
+
+  /**
+   * Using {@link VideoRecorder} stops recording video, refreshes file indexing after saving
+   * recorded video.
+   */
+  private void stopRecording() {
+    Log.d(TAG, "Stopping recording");
+    videoRecorder.stopRecording();
+    cameraActionHandlerCallback.onVideoRecordingStopped();
+    FileManager.refreshFileIndexing(context, videoRecorder.getLastRecordedFile());
+  }
+
+  /**
+   * Closes preview session.
+   */
+  private void closePreviewSession() {
+    Log.d(TAG, "Closing preview session");
+    cameraCaptureSessionController.closeSession();
+  }
+
+  /**
+   * Added functionality of recording and storing videos to the Camera2Sample application Creates a
+   * new {@link CameraCaptureSession} for camera preview.
    */
   private void createCameraPreviewSession() {
     Log.d(TAG, "Creating camera preview session");
@@ -268,6 +396,7 @@ public class CameraActionHandler implements OnImageAvailableListener {
         cameraCaptureSessionController.setSession(session);
         startPreview();
         cameraOpenCloseLock.release();
+        isVideoCaptureSessionPreparing = false;
       }
 
       @Override
@@ -305,5 +434,26 @@ public class CameraActionHandler implements OnImageAvailableListener {
   public void onImageAvailable(ImageReader reader) {
     Log.d(TAG, "Image is available");
     FileManager.saveImage(context, reader);
+  }
+
+  /**
+   * Available camera modes.
+   */
+  public enum CameraMode {
+    PICTURE, VIDEO
+  }
+
+  /**
+   * Callback for the camera action.
+   */
+  interface CameraActionHandlerCallback {
+
+    void onTakingPictureStarted();
+
+    void onVideoRecordingStarted();
+
+    void onVideoRecordingStopped();
+
+    void onCameraModeChanged(CameraMode newCameraMode);
   }
 }
