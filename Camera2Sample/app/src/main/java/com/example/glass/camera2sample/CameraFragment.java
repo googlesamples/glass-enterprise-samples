@@ -18,13 +18,18 @@ package com.example.glass.camera2sample;
 
 import android.Manifest.permission;
 import android.content.pm.PackageManager;
+import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +45,8 @@ import java.util.Objects;
  */
 public class CameraFragment extends Fragment
     implements OnRequestPermissionsResultCallback, OnGestureListener {
+
+  private static final String TAG = CameraFragment.class.getSimpleName();
 
   /**
    * Request code for the camera permission. This value doesn't have any special meaning.
@@ -67,10 +74,46 @@ public class CameraFragment extends Fragment
    */
   private ImageView shutterImageView;
 
+  /**
+   * {@link CameraActionHandler} for the camera.
+   */
+  private CameraActionHandler cameraActionHandler;
+
+  /**
+   * {@link TextureView.SurfaceTextureListener} handles several lifecycle events on a {@link
+   * TextureView}.
+   */
+  private final TextureView.SurfaceTextureListener surfaceTextureListener
+      = new TextureView.SurfaceTextureListener() {
+
+    @Override
+    public void onSurfaceTextureAvailable(SurfaceTexture texture, int width, int height) {
+      Log.d(TAG, "Surface texture available");
+      cameraActionHandler.setPreviewSurface(getSurface(texture));
+      cameraActionHandler.openCamera();
+    }
+
+    @Override
+    public void onSurfaceTextureSizeChanged(SurfaceTexture texture, int width, int height) {
+      Log.d(TAG, "Surface texture size changed");
+    }
+
+    @Override
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture texture) {
+      Log.d(TAG, "Surface texture destroyed");
+      return true;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture texture) {
+    }
+  };
+
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    final FrameLayout frameLayout = new FrameLayout(Objects.requireNonNull(getContext()));
+    final FrameLayout frameLayout = new FrameLayout(
+        Objects.requireNonNull(getContext(), "Context must not be null"));
     textureView = new TextureView(getContext());
     frameLayout.addView(textureView);
 
@@ -87,15 +130,40 @@ public class CameraFragment extends Fragment
   }
 
   @Override
+  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+    cameraActionHandler = new CameraActionHandler(getContext());
+  }
+
+  @Override
   public void onResume() {
     super.onResume();
+    cameraActionHandler.startBackgroundThread();
+
     for (String permission : REQUIRED_PERMISSIONS) {
-      if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), permission)
+      if (ContextCompat
+          .checkSelfPermission(Objects.requireNonNull(getActivity(), "Activity must not be null"),
+              permission)
           != PackageManager.PERMISSION_GRANTED) {
+        Log.d(TAG, "Requesting for the permissions");
         requestPermissions(new String[]{permission}, CAMERA_PERMISSIONS_REQUEST_CODE);
         return;
       }
     }
+
+    if (textureView.isAvailable()) {
+      cameraActionHandler.setPreviewSurface(getSurface(textureView.getSurfaceTexture()));
+      cameraActionHandler.openCamera();
+    } else {
+      textureView.setSurfaceTextureListener(surfaceTextureListener);
+    }
+  }
+
+  @Override
+  public void onPause() {
+    cameraActionHandler.closeCamera();
+    cameraActionHandler.stopBackgroundThread();
+    super.onPause();
   }
 
   @Override
@@ -104,16 +172,32 @@ public class CameraFragment extends Fragment
     if (requestCode == CAMERA_PERMISSIONS_REQUEST_CODE) {
       for (int result : grantResults) {
         if (result != PackageManager.PERMISSION_GRANTED) {
-          Objects.requireNonNull(getActivity()).finish();
+          Log.d(TAG, "Permission denied");
+          Objects.requireNonNull(getActivity(), "Activity must not be null").finish();
         }
       }
     } else {
       super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+    Log.d(TAG, "Permission granted");
   }
 
   @Override
   public boolean onGesture(Gesture gesture) {
-    return false;
+    switch (gesture) {
+      case TAP:
+        cameraActionHandler.performTapAction();
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  private Surface getSurface(SurfaceTexture surfaceTexture) {
+    final DisplayMetrics displayMetrics = new DisplayMetrics();
+    Objects.requireNonNull(getActivity(), "Activity must not be null").getWindowManager()
+        .getDefaultDisplay().getRealMetrics(displayMetrics);
+    surfaceTexture.setDefaultBufferSize(displayMetrics.widthPixels, displayMetrics.heightPixels);
+    return new Surface(surfaceTexture);
   }
 }
