@@ -19,4 +19,7 @@
   <string name="empty_gallery">Gallery is empty</string>
   <string name="gallery_item">Gallery item</string>
   <string name="picture">Picture</string>
+  <string name="delete">Delete</string>
+  <string name="menu_font">sans-serif-thin</string>
+  <string name="menu_item">Menu item</string>
 </resources>

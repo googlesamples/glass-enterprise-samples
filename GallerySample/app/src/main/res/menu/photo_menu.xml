@@ -14,10 +14,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<resources>
-  <dimen name="gallery_drawer_item_size">400dp</dimen>
-  <dimen name="gallery_drawer_item_margin">20dp</dimen>
-  <dimen name="gallery_empty_text_size">25sp</dimen>
-  <dimen name="menu_text_size">55sp</dimen>
-  <dimen name="menu_text_margin">16dp</dimen>
-</resources>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+      android:id="@+id/delete"
+      android:icon="@drawable/ic_delete_50"
+      android:title="@string/delete"/>
+</menu>

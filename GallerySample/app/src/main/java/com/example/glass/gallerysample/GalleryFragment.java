@@ -132,6 +132,14 @@ public class GalleryFragment extends Fragment implements OnGestureListener, Gall
     this.onGalleryItemSelectedListener = listener;
   }
 
+  /**
+   * Removes deleted GalleryItem object from the model and notifies view helper about this.
+   */
+  public void onGalleryItemDeleted(GalleryItem galleryItem) {
+    galleryModel.getItems().remove(galleryItem);
+    notifyDataSetChanged();
+  }
+
   private void notifyDataSetChanged() {
     if (isAdded()) {
       requireActivity().runOnUiThread((new Runnable() {

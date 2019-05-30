@@ -21,6 +21,7 @@ import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Handler;
@@ -29,6 +30,7 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.Files.FileColumns;
 import android.provider.MediaStore.Images.Media;
 import android.support.v4.content.CursorLoader;
+import android.util.Log;
 
 /**
  * Provides {@link GalleryItem}s and calls methods from {@link GalleryItemsListener} depends on the
@@ -36,6 +38,7 @@ import android.support.v4.content.CursorLoader;
  */
 public class GalleryItemsProvider {
 
+  private static final String TAG = GalleryItemsProvider.class.getSimpleName();
   private static final String VOLUME_NAME = "external";
   private static final String SORT_ORDER = " DESC";
   private static final int THUMBNAIL_WIDTH_PX = 400;
@@ -111,5 +114,22 @@ public class GalleryItemsProvider {
         }
       }
     });
+  }
+
+  /**
+   * Removes gallery item using given path.
+   */
+  public static void deleteGalleryItem(final Context context, String path) {
+    try {
+      MediaScannerConnection.scanFile(context, new String[]{path},
+          null, new MediaScannerConnection.OnScanCompletedListener() {
+            public void onScanCompleted(String path, Uri uri) {
+              context.getContentResolver()
+                  .delete(uri, null, null);
+            }
+          });
+    } catch (Exception e) {
+      Log.e(TAG, "Deleting gallery item failed", e);
+    }
   }
 }

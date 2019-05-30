@@ -54,6 +54,14 @@
         <category android:name="com.google.android.glass.category.DIRECTORY" />
       </intent-filter>
     </activity>
+    <activity android:name=".menu.MenuActivity"
+        android:theme="@style/MenuTheme">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+    </activity>
   </application>
 
 </manifest>

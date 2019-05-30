@@ -104,6 +104,13 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGestur
     fragmentTransaction.commit();
   }
 
+  /**
+   * Pops the back stack on the fragment manager.
+   */
+  public void popBackStack() {
+    getSupportFragmentManager().popBackStack();
+  }
+
   private void hideSystemUI() {
     decorView.setSystemUiVisibility(
         View.SYSTEM_UI_FLAG_IMMERSIVE

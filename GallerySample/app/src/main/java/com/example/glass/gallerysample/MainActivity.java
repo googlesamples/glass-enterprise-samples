@@ -23,13 +23,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import com.example.glass.gallerysample.GalleryFragment.OnGalleryItemSelectedListener;
+import com.example.glass.gallerysample.GalleryItemFragment.OnGalleryItemDeletedListener;
 
 /**
- * Main activity of the application. It checks for necessary permissions, adds {@link
- * GalleryFragment} to the container and implements {@link OnGalleryItemSelectedListener} interface
- * to perform an action when gallery item is selected.
+ * Main activity of the application. It checks for necessary permissions and adds {@link
+ * GalleryFragment} to the container.
  */
-public class MainActivity extends BaseActivity implements OnGalleryItemSelectedListener {
+public class MainActivity extends BaseActivity implements OnGalleryItemSelectedListener,
+    OnGalleryItemDeletedListener {
 
   /**
    * Request code for the gallery permissions. This value doesn't have any special meaning.
@@ -41,6 +42,9 @@ public class MainActivity extends BaseActivity implements OnGalleryItemSelectedL
    */
   private String[] permissions = {permission.READ_EXTERNAL_STORAGE,
       permission.WRITE_EXTERNAL_STORAGE};
+
+  private GalleryItem galleryItem;
+  private GalleryFragment galleryFragment;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -77,18 +81,26 @@ public class MainActivity extends BaseActivity implements OnGalleryItemSelectedL
   public void onAttachFragment(Fragment fragment) {
     super.onAttachFragment(fragment);
     if (fragment instanceof GalleryFragment) {
-      final GalleryFragment galleryFragment = (GalleryFragment) fragment;
+      galleryFragment = (GalleryFragment) fragment;
       galleryFragment.setOnGalleryItemSelectedListener(this);
+    } else if (fragment instanceof GalleryItemFragment) {
+      final GalleryItemFragment galleryItemFragment = (GalleryItemFragment) fragment;
+      galleryItemFragment.setOnGalleryItemDeletedListener(this);
     }
   }
 
   @Override
   public void onGalleryItemSelected(GalleryItem galleryItem) {
-    final GalleryItemFragment galleryItemFragment = new GalleryItemFragment();
-    galleryItemFragment.setArguments(GalleryItemFragment
-        .createArguments(galleryItem.getName(), galleryItem.getPath(),
-            galleryItem.getType().ordinal()));
-    replaceFragment(galleryItemFragment, true);
+    this.galleryItem = galleryItem;
+    replaceFragment(GalleryItemFragment.newInstance(galleryItem), true);
+  }
+
+  @Override
+  public void onGalleryItemDeleted(String filePath) {
+    if (galleryItem.getPath().equals(filePath)) {
+      galleryFragment.onGalleryItemDeleted(galleryItem);
+    }
+    popBackStack();
   }
 
   private void initializeGalleryFragment() {
