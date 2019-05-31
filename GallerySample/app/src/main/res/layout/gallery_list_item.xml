@@ -14,29 +14,39 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
+    <import type="android.view.View" />
+    <import type="com.example.glass.gallerysample.GalleryItem" />
     <variable
         name="item"
-        type="com.example.glass.gallerysample.GalleryItem"/>
+        type="com.example.glass.gallerysample.GalleryItem" />
   </data>
 
-  <android.support.constraint.ConstraintLayout
-      style="@style/GalleryStyle.GalleryItem">
+  <android.support.constraint.ConstraintLayout style="@style/GalleryStyle.GalleryItem">
 
     <ImageView
         android:id="@+id/currentKeyImageView"
         style="@style/GalleryImageStyle"
+        android:contentDescription="@string/gallery_item"
         android:src="@{item.bitmap}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/playButtonImageView"
+        style="@style/GalleryImageStyle"
+        android:contentDescription="@string/play"
+        android:src="@drawable/ic_video_play_50"
+        android:visibility="@{item.type == GalleryItem.Type.VIDEO ? View.VISIBLE : View.GONE}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
   </android.support.constraint.ConstraintLayout>
 

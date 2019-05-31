@@ -20,6 +20,9 @@ import static android.app.Activity.RESULT_OK;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,9 +31,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.VideoView;
 import com.example.glass.gallerysample.menu.MenuActivity;
 import com.example.glass.ui.GlassGestureDetector.Gesture;
 import com.example.glass.ui.GlassGestureDetector.OnGestureListener;
+import java.io.File;
 
 /**
  * Displays selected gallery item on the full screen.
@@ -47,7 +52,10 @@ public class GalleryItemFragment extends Fragment implements OnGestureListener {
   private static final String TYPE_KEY = "type";
 
   private ImageView imageView;
+  private ImageView playButtonVideoImageView;
+  private VideoView videoView;
   private String filePath;
+  private GalleryItem.Type galleryItemType;
   private OnGalleryItemDeletedListener onGalleryItemDeletedListener;
 
   /**
@@ -73,20 +81,47 @@ public class GalleryItemFragment extends Fragment implements OnGestureListener {
     return bundle;
   }
 
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    galleryItemType = GalleryItem.Type.fromId(getArguments().getInt(TYPE_KEY));
+  }
+
   @Nullable
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.gallery_item_picture, container, false);
+    switch (galleryItemType) {
+      case VIDEO:
+        return inflater.inflate(R.layout.gallery_item_video, container, false);
+      default:
+        return inflater.inflate(R.layout.gallery_item_picture, container, false);
+    }
   }
 
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    imageView = view.findViewById(R.id.galleryItemImageView);
-    filePath = getArguments().getString(PATH_KEY);
-    final Drawable drawable = Drawable.createFromPath(filePath);
-    imageView.setImageDrawable(drawable);
+    switch (galleryItemType) {
+      case VIDEO:
+        playButtonVideoImageView = view.findViewById(R.id.playButtonVideoImageView);
+        filePath = getArguments().getString(PATH_KEY);
+        videoView = view.findViewById(R.id.videoView);
+        videoView.setVideoURI(Uri.fromFile(new File(filePath)));
+        videoView.start();
+        videoView.setOnCompletionListener(new OnCompletionListener() {
+          @Override
+          public void onCompletion(MediaPlayer mp) {
+            playButtonVideoImageView.setVisibility(View.VISIBLE);
+          }
+        });
+        break;
+      default:
+        imageView = view.findViewById(R.id.galleryItemImageView);
+        filePath = getArguments().getString(PATH_KEY);
+        final Drawable drawable = Drawable.createFromPath(filePath);
+        imageView.setImageDrawable(drawable);
+    }
   }
 
   @Override
@@ -99,7 +134,13 @@ public class GalleryItemFragment extends Fragment implements OnGestureListener {
   public boolean onGesture(Gesture glassGesture) {
     switch (glassGesture) {
       case TAP:
-        startActivityForResult(getMenuIntent(), MENU_REQUEST_CODE);
+        switch (GalleryItem.Type.fromId(getArguments().getInt(TYPE_KEY))) {
+          case IMAGE:
+            startActivityForResult(getMenuIntent(R.menu.photo_menu), MENU_REQUEST_CODE);
+            break;
+          case VIDEO:
+            startActivityForResult(getMenuIntent(R.menu.video_menu), MENU_REQUEST_CODE);
+        }
         return true;
       case SWIPE_DOWN:
         ((BaseActivity) requireActivity()).popBackStack();
@@ -116,6 +157,10 @@ public class GalleryItemFragment extends Fragment implements OnGestureListener {
       final int id = data.getIntExtra(MenuActivity.EXTRA_MENU_ITEM_ID_KEY,
           MenuActivity.EXTRA_MENU_ITEM_DEFAULT_VALUE);
       switch (id) {
+        case R.id.play_video:
+          playButtonVideoImageView.setVisibility(View.GONE);
+          videoView.start();
+          break;
         case R.id.delete:
           GalleryItemsProvider.deleteGalleryItem(getContext(), filePath);
           onGalleryItemDeletedListener.onGalleryItemDeleted(filePath);
@@ -131,9 +176,9 @@ public class GalleryItemFragment extends Fragment implements OnGestureListener {
     this.onGalleryItemDeletedListener = listener;
   }
 
-  private Intent getMenuIntent() {
+  private Intent getMenuIntent(int menu) {
     final Intent intent = new Intent(getContext(), MenuActivity.class);
-    intent.putExtra(MenuActivity.EXTRA_MENU_KEY, R.menu.photo_menu);
+    intent.putExtra(MenuActivity.EXTRA_MENU_KEY, menu);
     return intent;
   }
 
