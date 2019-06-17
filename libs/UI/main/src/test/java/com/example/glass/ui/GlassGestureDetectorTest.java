@@ -21,8 +21,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import android.view.MotionEvent;
-import com.example.android.glass.cardsample.GlassGestureDetector.Gesture;
-import com.example.android.glass.cardsample.GlassGestureDetector.OnGestureListener;
+import com.example.glass.ui.GlassGestureDetector.Gesture;
+import com.example.glass.ui.GlassGestureDetector.OnGestureListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
