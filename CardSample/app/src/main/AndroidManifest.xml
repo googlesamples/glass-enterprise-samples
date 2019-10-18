@@ -25,6 +25,20 @@
       android:roundIcon="@mipmap/ic_launcher"
       android:supportsRtl="true"
       android:theme="@style/AppTheme">
+    <!--
+      Changes Glass touchpad response from the following key strokes:
+        - Enter
+        - Tab
+        - Shift + Tab
+        - Back button
+        - Home button
+        - Arrows
+      to the motion events, enabling this app to use the touch gestures.
+    -->
+    <meta-data
+        android:name="com.google.android.glass.TouchEnabledApplication"
+        android:value="true" />
+
     <activity android:name="com.example.android.glass.cardsample.MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
