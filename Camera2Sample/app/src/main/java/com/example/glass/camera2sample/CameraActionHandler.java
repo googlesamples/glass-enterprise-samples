@@ -241,7 +241,7 @@ public class CameraActionHandler implements OnImageAvailableListener {
   }
 
   /**
-   * Performs action on {@link com.example.glass.ui.GlassGestureDetector.Gesture#TAP} gesture.
+   * Performs action on {@link GlassGestureDetector.Gesture#TAP} gesture.
    */
   public void performTapAction() {
     switch (cameraMode) {
@@ -264,30 +264,87 @@ public class CameraActionHandler implements OnImageAvailableListener {
   }
 
   /**
-   * Performs action on {@link com.example.glass.ui.GlassGestureDetector.Gesture#SWIPE_FORWARD}
+   * Performs action on {@link GlassGestureDetector.Gesture#SWIPE_FORWARD}
    * gesture.
    */
   public void performSwipeForwardAction() {
     Log.d(TAG, "Performing swipe forward action");
-    if (cameraMode == CameraMode.PICTURE) {
-      cameraMode = CameraMode.VIDEO;
-      videoRecorder = new VideoRecorder();
-      cameraActionHandlerCallback.onCameraModeChanged(cameraMode);
-    }
+    switchCameraMode(CameraMode.VIDEO);
   }
 
   /**
-   * Performs action on {@link com.example.glass.ui.GlassGestureDetector.Gesture#SWIPE_BACKWARD}
+   * Performs action on {@link GlassGestureDetector.Gesture#SWIPE_BACKWARD}
    * gesture.
    */
   public void performSwipeBackwardAction() {
     Log.d(TAG, "Performing swipe backward action");
-    if (cameraMode == CameraMode.VIDEO && !videoRecorder.isRecording()) {
-      cameraMode = CameraMode.PICTURE;
-      if (videoRecorder != null) {
-        videoRecorder.releaseMediaRecorder();
-      }
-      cameraActionHandlerCallback.onCameraModeChanged(cameraMode);
+    switchCameraMode(CameraMode.PICTURE);
+  }
+
+  /**
+   * Performs action on camera button short press event. Possible scenarios:
+   * <ol>
+   * <li>
+   * If {@link CameraMode} is set to {@link CameraMode#PICTURE}, picture will be taken.
+   * </li>
+   * <li>
+   * If {@link CameraMode} is set to {@link CameraMode#VIDEO} and video is recording, recording will
+   * be stopped.
+   * </li>
+   * <li>
+   * If {@link CameraMode} is set to {@link CameraMode#VIDEO} and video is not recording, {@link
+   * CameraMode} will be changed to the {@link CameraMode#PICTURE} and picture will be taken.
+   * </li>
+   * </ol>
+   */
+  public void performCameraButtonPress() {
+    switch (cameraMode) {
+      case PICTURE:
+        takePicture();
+        break;
+      case VIDEO:
+        if (videoRecorder.isRecording()) {
+          stopRecording();
+          createCameraPreviewSession();
+        } else {
+          switchCameraMode(CameraMode.PICTURE);
+          takePicture();
+        }
+        break;
+    }
+  }
+
+  /**
+   * Performs action on camera button long press event. Possible scenarios:
+   * <ol>
+   * <li>
+   * If {@link CameraMode} is set to {@link CameraMode#PICTURE}, {@link CameraMode} will be changed
+   * to the {@link CameraMode#VIDEO} and video recording will be started.
+   * </li>
+   * <li>
+   * If {@link CameraMode} is set to {@link CameraMode#VIDEO} and video is recording, recording will
+   * be stopped.
+   * </li>
+   * <li>
+   * If {@link CameraMode} is set to {@link CameraMode#VIDEO} and video is not recording, video
+   * recording will be started.
+   * </li>
+   * </ol>
+   */
+  public void performCameraButtonLongPress() {
+    switch (cameraMode) {
+      case PICTURE:
+        switchCameraMode(CameraMode.VIDEO);
+        startRecording();
+        break;
+      case VIDEO:
+        if (videoRecorder.isRecording()) {
+          stopRecording();
+          createCameraPreviewSession();
+        } else {
+          startRecording();
+        }
+        break;
     }
   }
 
@@ -296,6 +353,46 @@ public class CameraActionHandler implements OnImageAvailableListener {
    */
   public void setPreviewSurface(Surface previewSurface) {
     this.previewSurface = previewSurface;
+  }
+
+  /**
+   * Switches {@link CameraMode} states. Possible scenarios:
+   * <ol>
+   * <li>
+   * If new {@link CameraMode} is the same as the current mode, no action will be performed.
+   * </li>
+   * <li>
+   * If new {@link CameraMode} is {@link CameraMode#PICTURE} and video is recording, no action will
+   * be performed.
+   * </li>
+   * <li>
+   * If new {@link CameraMode} is {@link CameraMode#PICTURE} and video is not recording, {@link
+   * CameraMode} will be switched to the {@link CameraMode#PICTURE}.
+   * </li>
+   * <li>
+   * If new {@link CameraMode} is {@link CameraMode#VIDEO}, {@link CameraMode} will be switched to
+   * the {@link CameraMode#VIDEO}.
+   * </li>
+   * </ol>
+   */
+  private void switchCameraMode(CameraMode newMode) {
+    if (cameraMode == newMode) {
+      return;
+    }
+    switch (newMode) {
+      case PICTURE:
+        if (!videoRecorder.isRecording()) {
+          cameraMode = CameraMode.PICTURE;
+          videoRecorder = null;
+          cameraActionHandlerCallback.onCameraModeChanged(cameraMode);
+        }
+        break;
+      case VIDEO:
+        cameraMode = CameraMode.VIDEO;
+        videoRecorder = new VideoRecorder();
+        cameraActionHandlerCallback.onCameraModeChanged(cameraMode);
+        break;
+    }
   }
 
   /**

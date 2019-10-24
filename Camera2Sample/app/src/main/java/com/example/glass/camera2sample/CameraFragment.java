@@ -28,6 +28,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
@@ -80,6 +81,11 @@ public class CameraFragment extends Fragment
    * {@link CameraActionHandler} for the camera.
    */
   private CameraActionHandler cameraActionHandler;
+
+  /**
+   * Flag indicating if the long press action has been performed.
+   */
+  private boolean isLongPressPerformed = false;
 
   /**
    * {@link TextureView.SurfaceTextureListener} handles several lifecycle events on a {@link
@@ -198,6 +204,39 @@ public class CameraFragment extends Fragment
         return true;
       case SWIPE_DOWN:
         Objects.requireNonNull(getActivity()).finish();
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  /**
+   * Handles {@link KeyEvent#ACTION_UP} events for the {@link KeyEvent#KEYCODE_CAMERA} and calls
+   * corresponding method on {@link CameraActionHandler}.
+   */
+  public boolean onKeyUp(int keyCode) {
+    if (isLongPressPerformed) {
+      isLongPressPerformed = false;
+      return false;
+    }
+    switch (keyCode) {
+      case KeyEvent.KEYCODE_CAMERA:
+        cameraActionHandler.performCameraButtonPress();
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  /**
+   * Handles long key press events for the {@link KeyEvent#KEYCODE_CAMERA} and calls corresponding
+   * method on {@link CameraActionHandler}.
+   */
+  public boolean onKeyLongPress(int keyCode) {
+    switch (keyCode) {
+      case KeyEvent.KEYCODE_CAMERA:
+        cameraActionHandler.performCameraButtonLongPress();
+        isLongPressPerformed = true;
         return true;
       default:
         return false;
