@@ -1,9 +1,16 @@
-# Google Glass UI library
+# Glass Gesture Detector Library Sample
 
-## Helper classes included in this library
+This project is an example of a shared library for recognizing simple gestures 
+on the touchpad, such as tap and swipe. It's used by many of the other samples in
+this repository and it can also be used as a starting point for your own UI
+libraries on Glass.
+
+## Important Classes in this Sample
 
 ### GlassGestureDetector
-GlassGestureDetector helps to recognize common one finger gestures like:
+
+GlassGestureDetector recognizes common one finger gestures like:
+
 * tap
 * swipe down
 * swipe up
@@ -12,7 +19,7 @@ GlassGestureDetector helps to recognize common one finger gestures like:
 
 Example usage:
 
-```
+```java
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -47,3 +54,7 @@ public class MainActivity extends Activity implements OnGestureListener {
   }
 }
 ```
+
+## Building
+
+This sample does not require any additional setup. Open the project in Android Studio and build as usual!

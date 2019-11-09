@@ -20,6 +20,8 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 
+import java.util.Objects;
+
 /**
  * Represents the single menu item object.
  */
@@ -70,5 +72,19 @@ class GlassMenuItem {
    */
   String getText() {
     return text;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    GlassMenuItem that = (GlassMenuItem) o;
+    return Objects.equals(icon, that.icon) &&
+            Objects.equals(text, that.text);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(icon, text);
   }
 }

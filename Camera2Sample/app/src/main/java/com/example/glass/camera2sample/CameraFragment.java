@@ -37,17 +37,17 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import com.example.glass.camera2sample.GlassGestureDetector.Gesture;
-import com.example.glass.camera2sample.GlassGestureDetector.OnGestureListener;
 import com.example.glass.camera2sample.CameraActionHandler.CameraActionHandlerCallback;
 import com.example.glass.camera2sample.CameraActionHandler.CameraMode;
+import com.example.glass.ui.GlassGestureDetector;
+
 import java.util.Objects;
 
 /**
  * Fragment responsible for displaying the camera preview and handling camera actions.
  */
 public class CameraFragment extends Fragment
-    implements OnRequestPermissionsResultCallback, OnGestureListener, CameraActionHandlerCallback {
+    implements OnRequestPermissionsResultCallback, GlassGestureDetector.OnGestureListener, CameraActionHandlerCallback {
 
   private static final String TAG = CameraFragment.class.getSimpleName();
 
@@ -191,7 +191,7 @@ public class CameraFragment extends Fragment
   }
 
   @Override
-  public boolean onGesture(Gesture gesture) {
+  public boolean onGesture(GlassGestureDetector.Gesture gesture) {
     switch (gesture) {
       case TAP:
         cameraActionHandler.performTapAction();

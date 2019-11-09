@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Google Inc. All rights reserved.
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,15 +26,11 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-        }
-    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.aar'])
+    implementation 'com.example.glass.ui:gesture-lib-sample:0.1.0-SNAPSHOT'
+
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }
