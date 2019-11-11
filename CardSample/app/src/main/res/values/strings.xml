@@ -27,4 +27,5 @@
   <string name="add">Add</string>
   <string name="save">Save</string>
   <string name="delete">Delete</string>
+  <string name="like_this_sample">Do you like this sample?\n\nSource code is available at:\ng.co/glass/samples</string>
 </resources>
