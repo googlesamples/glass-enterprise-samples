@@ -17,8 +17,9 @@
 package com.example.glass.camera2sample;
 
 import android.os.Bundle;
-import com.example.glass.camera2sample.GlassGestureDetector.Gesture;
 import android.view.KeyEvent;
+
+import com.example.glass.ui.GlassGestureDetector;
 
 /**
  * Main activity of the application. It creates instance of {@link CameraFragment} and passes
@@ -37,7 +38,7 @@ public class MainActivity extends BaseActivity {
   }
 
   @Override
-  public boolean onGesture(Gesture gesture) {
+  public boolean onGesture(GlassGestureDetector.Gesture gesture) {
     return cameraFragment.onGesture(gesture) || super.onGesture(gesture);
   }
 

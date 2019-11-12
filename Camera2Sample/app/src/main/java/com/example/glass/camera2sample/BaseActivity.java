@@ -22,14 +22,14 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
-import com.example.glass.camera2sample.GlassGestureDetector.Gesture;
-import com.example.glass.camera2sample.GlassGestureDetector.OnGestureListener;
+import com.example.glass.ui.GlassGestureDetector;
 
 /**
  * Base activity for all activities in application for Glass. It hides the UI, making application
  * full screen and sets {@link GlassGestureDetector}.
  */
-public abstract class BaseActivity extends AppCompatActivity implements OnGestureListener {
+public abstract class BaseActivity extends AppCompatActivity
+        implements GlassGestureDetector.OnGestureListener {
 
   private View decorView;
   private GlassGestureDetector glassGestureDetector;
@@ -65,7 +65,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnGestur
   }
 
   @Override
-  public boolean onGesture(Gesture gesture) {
+  public boolean onGesture(GlassGestureDetector.Gesture gesture) {
     switch (gesture) {
       case SWIPE_DOWN:
         finish();
