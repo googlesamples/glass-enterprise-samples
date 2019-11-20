@@ -27,3 +27,7 @@ See the [CONTRIBUTING](CONTRIBUTING.md) documentation for more information on ho
 ## Licensing
 
 See [LICENSE](LICENSE).
+
+## Disclaimer
+
+This is not an official Google product.
