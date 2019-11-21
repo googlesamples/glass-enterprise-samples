@@ -17,11 +17,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.glass.glassqrcodescanner"
         minSdkVersion 27
-        targetSdkVersion 29
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -37,6 +37,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.example.glass.ui:gesture-lib-sample:0.1.0-SNAPSHOT'
+
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.camera:camera-core:1.0.0-alpha06'
     implementation 'androidx.camera:camera-camera2:1.0.0-alpha06'

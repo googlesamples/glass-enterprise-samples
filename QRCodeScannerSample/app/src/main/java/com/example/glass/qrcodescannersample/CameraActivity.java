@@ -27,8 +27,10 @@ import android.view.TextureView;
 import androidx.annotation.NonNull;
 import androidx.camera.core.CameraX;
 import androidx.core.content.ContextCompat;
-import com.example.glass.qrcodescannersample.GlassGestureDetector.Gesture;
+
 import com.example.glass.qrcodescannersample.QRCodeImageAnalysis.QrCodeAnalysisCallback;
+import com.example.glass.ui.GlassGestureDetector.Gesture;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
