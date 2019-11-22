@@ -15,7 +15,6 @@
  */
 
 apply plugin: 'com.android.library'
-apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion 28
@@ -24,19 +23,6 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0.0"
-    }
-}
-
-project.afterEvaluate {
-    publishing {
-        publications {
-            aar(MavenPublication) {
-                groupId 'com.example.glass.ui'
-                artifactId 'gesture-lib-sample'
-                version '0.1.0-SNAPSHOT'
-                artifact bundleReleaseAar
-            }
-        }
     }
 }
 
