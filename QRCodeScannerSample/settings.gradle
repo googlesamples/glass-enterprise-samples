@@ -15,3 +15,9 @@
  */
 
 include ':app'
+
+includeBuild('../GestureLibrarySample') {
+    dependencySubstitution {
+        substitute module('com.example.glass.ui:gesture-lib-sample') with project(':main')
+    }
+}

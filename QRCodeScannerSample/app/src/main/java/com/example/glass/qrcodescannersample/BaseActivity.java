@@ -21,7 +21,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
-import com.example.glass.qrcodescannersample.GlassGestureDetector.OnGestureListener;
+
+import com.example.glass.ui.GlassGestureDetector;
+import com.example.glass.ui.GlassGestureDetector.OnGestureListener;
 
 /**
  * Base Activity class used to hide the system UI and capture gestures.

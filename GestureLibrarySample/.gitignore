@@ -4,10 +4,12 @@
 .idea
 .project
 .settings
+.classpath
 .DS_Store
 /bin
 /main/bin
 /build
+/main/build
 /captures
 /out
 .externalNativeBuild
