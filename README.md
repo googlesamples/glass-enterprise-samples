@@ -1,6 +1,6 @@
 # Glass Samples
 
-This repository contains sample code for Glass Enterprise Edition 2 (EE2).
+This repository contains sample code for Google Glass Enterprise Edition 2 (EE2). This repository is provided for example purposes only.
 
 ## Getting The Code
 
@@ -25,10 +25,14 @@ Contributions to these samples are always welcome and highly encouraged.
 
 See the [CONTRIBUTING](CONTRIBUTING.md) documentation for more information on how to get started.
 
-## Licensing
+## Reporting Issues & Support
 
-See [LICENSE](LICENSE).
+You can report bugs related to this sample code using the [issue tracker](https://github.com/googlesamples/glass-enterprise-samples/issues). If you have an issue with your Google Glass device, contact [Google Glass Support](http://g.co/glass/contactus).
 
-## Disclaimer
+## License
 
-This is not an official Google product.
+See [LICENSE](LICENSE) for the specific language governing permissions and limitations under the License. Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
+
+This repository is distributed on an "AS IS" BASIS WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, and is not part of any Google Glass product offerings.
+
+Copyright 2019 Google LLC
