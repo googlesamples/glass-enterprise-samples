@@ -55,6 +55,9 @@ public class MainActivity extends BaseActivity {
         fragments.add(ColumnLayoutFragment
             .newInstance(R.drawable.ic_note_50, getString(R.string.columns_sample),
                 getString(R.string.footnote_sample), getString(R.string.timestamp_sample)));
+        fragments.add(MainLayoutFragment
+            .newInstance(getString(R.string.like_this_sample), getString(R.string.empty_string),
+                getString(R.string.empty_string), null));
 
         screenSlidePagerAdapter.notifyDataSetChanged();
     }
