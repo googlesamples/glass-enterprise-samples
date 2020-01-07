@@ -26,7 +26,7 @@ public class GalleryItem {
   /**
    * Gallery item type.
    */
-  enum Type {
+  public enum Type {
     IMAGE, VIDEO;
 
     /**

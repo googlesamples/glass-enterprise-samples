@@ -18,6 +18,7 @@ package com.example.glass.gallerysample;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -29,6 +30,7 @@ import android.os.HandlerThread;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Files.FileColumns;
 import android.provider.MediaStore.Images.Media;
+import android.provider.MediaStore.Video.Thumbnails;
 import android.support.v4.content.CursorLoader;
 import android.util.Log;
 
@@ -75,9 +77,12 @@ public class GalleryItemsProvider {
         // Obtains content URI for the external drive.
         Uri queryUri = MediaStore.Files.getContentUri(VOLUME_NAME);
 
-        // Creates selection for the images only.
+        // Creates selection for the images and videos.
         String selection = FileColumns.MEDIA_TYPE + "="
-            + FileColumns.MEDIA_TYPE_IMAGE;
+            + FileColumns.MEDIA_TYPE_IMAGE
+            + " OR "
+            + FileColumns.MEDIA_TYPE + "="
+            + FileColumns.MEDIA_TYPE_VIDEO;
 
         CursorLoader cursorLoader = new CursorLoader(
             context,
@@ -98,17 +103,33 @@ public class GalleryItemsProvider {
 
           // Iterate over the cursor to notify listener about the found gallery item.
           while (cursor.moveToNext()) {
+            final int columnIndexId = cursor.getColumnIndex(FileColumns._ID);
             final int columnIndexName = cursor.getColumnIndex(FileColumns.TITLE);
             final int columnIndexPath = cursor.getColumnIndex(Media.DATA);
+            final int columnIndexType = cursor.getColumnIndex(FileColumns.MEDIA_TYPE);
+            final long id = cursor.getLong(columnIndexId);
             final String name = cursor.getString(columnIndexName);
             final String path = cursor.getString(columnIndexPath);
+            final String type = cursor.getString(columnIndexType);
 
-            // Creates thumbnail from the bitmap.
-            final Drawable drawable = new BitmapDrawable(context.getResources(),
-                ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(path), THUMBNAIL_WIDTH_PX,
-                    THUMBNAIL_HEIGHT_PX));
-            galleryItemsListener
-                .onItemFound(new GalleryItem(name, path, GalleryItem.Type.IMAGE, drawable));
+            if (Integer.parseInt(type) == FileColumns.MEDIA_TYPE_IMAGE) {
+              // Creates thumbnail from the bitmap.
+              final Drawable drawable = new BitmapDrawable(context.getResources(), ThumbnailUtils
+                  .extractThumbnail(BitmapFactory.decodeFile(path), THUMBNAIL_WIDTH_PX,
+                      THUMBNAIL_HEIGHT_PX));
+              galleryItemsListener
+                  .onItemFound(new GalleryItem(name, path, GalleryItem.Type.IMAGE, drawable));
+            } else if (Integer.parseInt(type) == FileColumns.MEDIA_TYPE_VIDEO) {
+              // Creates thumbnail from the first frame of the video.
+              BitmapFactory.Options options = new BitmapFactory.Options();
+              options.inSampleSize = 1;
+              Bitmap bitmap = MediaStore.Video.Thumbnails
+                  .getThumbnail(context.getContentResolver(), id, Thumbnails.MINI_KIND, options);
+              final Drawable drawable = new BitmapDrawable(context.getResources(),
+                  ThumbnailUtils.extractThumbnail(bitmap, THUMBNAIL_WIDTH_PX, THUMBNAIL_HEIGHT_PX));
+              galleryItemsListener
+                  .onItemFound(new GalleryItem(name, path, GalleryItem.Type.VIDEO, drawable));
+            }
           }
           cursor.close();
         }

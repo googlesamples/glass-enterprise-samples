@@ -14,14 +14,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<resources>
-  <string name="app_name">Gallery Sample</string>
-  <string name="empty_gallery">Gallery is empty</string>
-  <string name="gallery_item">Gallery item</string>
-  <string name="picture">Picture</string>
-  <string name="delete">Delete</string>
-  <string name="play_video">Play video</string>
-  <string name="menu_font">sans-serif-thin</string>
-  <string name="menu_item">Menu item</string>
-  <string name="play">Play</string>
-</resources>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+      android:id="@+id/play_video"
+      android:icon="@drawable/ic_video_play_50"
+      android:title="@string/play_video"/>
+  <item
+      android:id="@+id/delete"
+      android:icon="@drawable/ic_delete_50"
+      android:title="@string/delete"/>
+</menu>
