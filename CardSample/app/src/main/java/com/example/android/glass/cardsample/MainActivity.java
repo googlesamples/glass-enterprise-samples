@@ -17,6 +17,7 @@
 package com.example.android.glass.cardsample;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -60,6 +61,9 @@ public class MainActivity extends BaseActivity {
                 getString(R.string.empty_string), null));
 
         screenSlidePagerAdapter.notifyDataSetChanged();
+        
+        final TabLayout tabLayout = findViewById(R.id.page_indicator);
+        tabLayout.setupWithViewPager(viewPager, true);
     }
 
     @Override

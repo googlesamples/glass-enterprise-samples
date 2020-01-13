@@ -24,7 +24,7 @@
   <!-- The recommended margin between the bottom of the card and the footer. This is
        an adjusted value so that the baseline of the text in the footer sits 40px
        from the bottom of the card, matching the other margins. -->
-  <dimen name="glass_card_footer_margin">33dp</dimen>
+  <dimen name="glass_card_footer_margin">50dp</dimen>
 
   <!-- The recommended margin for the left column of the two-column card. -->
   <dimen name="glass_card_two_column_margin">30dp</dimen>
