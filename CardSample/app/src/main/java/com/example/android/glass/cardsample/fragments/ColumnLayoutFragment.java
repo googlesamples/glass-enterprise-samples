@@ -18,20 +18,18 @@ package com.example.android.glass.cardsample.fragments;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.example.android.glass.cardsample.R;
 
 /**
- * Fragment with the two column layout based on the
- * <a href="https://developers.google.com/glass/develop/gdk/card-design#left_column_layout">
- * Left Column Layout</a>.
+ * Fragment with the two column layout.
  */
 public class ColumnLayoutFragment extends BaseFragment {
 
@@ -73,7 +71,7 @@ public class ColumnLayoutFragment extends BaseFragment {
       final ImageView imageView = new ImageView(getActivity());
       imageView.setImageResource(getArguments().getInt(IMAGE_KEY));
 
-      final RelativeLayout leftColumn = view.findViewById(R.id.left_column);
+      final FrameLayout leftColumn = view.findViewById(R.id.left_column);
       leftColumn.addView(imageView);
 
       final TextView textView = new TextView(getActivity());
@@ -81,7 +79,7 @@ public class ColumnLayoutFragment extends BaseFragment {
       textView.setTextSize(TEXT_SIZE);
       textView.setTypeface(Typeface.create(getString(R.string.thin_font), Typeface.NORMAL));
 
-      final RelativeLayout rightColumn = view.findViewById(R.id.right_column);
+      final FrameLayout rightColumn = view.findViewById(R.id.right_column);
       rightColumn.addView(textView);
 
       final TextView footer = view.findViewById(R.id.footer);
@@ -91,13 +89,5 @@ public class ColumnLayoutFragment extends BaseFragment {
       timestamp.setText(getArguments().getString(TIMESTAMP_KEY, getString(R.string.empty_string)));
     }
     return view;
-  }
-
-  @Override
-  public void onSingleTapUp() {
-    /*
-    Does nothing intentionally
-    Overriding this method removes the menu functionality from the fragment.
-     */
   }
 }

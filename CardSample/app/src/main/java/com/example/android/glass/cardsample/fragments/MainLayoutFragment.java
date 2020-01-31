@@ -18,19 +18,17 @@ package com.example.android.glass.cardsample.fragments;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.example.android.glass.cardsample.R;
 
 /**
- * Fragment with the main card layout based on the
- * <a href="https://developers.google.com/glass/develop/gdk/card-design#main_layout">
- * Main Layout</a>.
+ * Fragment with the main card layout.
  */
 public class MainLayoutFragment extends BaseFragment {
 
@@ -73,7 +71,7 @@ public class MainLayoutFragment extends BaseFragment {
       textView.setTextSize(BODY_TEXT_SIZE);
       textView.setTypeface(Typeface.create(getString(R.string.thin_font), Typeface.NORMAL));
 
-      final RelativeLayout bodyLayout = view.findViewById(R.id.body_layout);
+      final FrameLayout bodyLayout = view.findViewById(R.id.body_layout);
       bodyLayout.addView(textView);
 
       final TextView footer = view.findViewById(R.id.footer);

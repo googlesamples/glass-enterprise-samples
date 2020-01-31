@@ -16,10 +16,10 @@
 
 package com.example.android.glass.cardsample.menu;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import com.example.android.glass.cardsample.databinding.MenuItemBinding;
 import java.util.List;
 

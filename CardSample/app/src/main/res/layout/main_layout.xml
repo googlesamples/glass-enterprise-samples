@@ -15,62 +15,55 @@
  limitations under the License.
 -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
-  <RelativeLayout
+  <FrameLayout
       android:id="@+id/body_layout"
-      android:layout_width="match_parent"
-      android:layout_height="@dimen/glass_card_body_height"
-      android:layout_marginLeft="@dimen/glass_card_margin"
-      android:layout_marginTop="@dimen/glass_card_margin"
-      android:layout_marginRight="@dimen/glass_card_margin"
-      tools:ignore="UselessLeaf"
-      >
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_margin="@dimen/glass_card_margin"
+      app:layout_constraintBottom_toTopOf="@id/footer"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
 
-    <!-- Put your widgets inside this RelativeLayout. -->
+    <!-- Put your widgets inside this FrameLayout. -->
 
-  </RelativeLayout>
+  </FrameLayout>
 
-  <LinearLayout
-      android:id="@+id/footer_container"
-      android:layout_width="match_parent"
+  <!-- The footer view will grow to fit as much content as possible while the
+         timestamp view keeps its width. If the footer text is too long, it
+         will be ellipsized with a 40dp margin between it and the timestamp. -->
+
+  <TextView
+      android:id="@+id/footer"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_gravity="bottom|left"
-      android:layout_marginLeft="@dimen/glass_card_margin"
-      android:layout_marginBottom="@dimen/glass_card_footer_margin"
-      android:layout_marginRight="@dimen/glass_card_margin"
-      android:orientation="horizontal"
-      >
+      android:layout_marginStart="@dimen/glass_card_margin"
+      android:layout_marginEnd="@dimen/glass_card_margin"
+      android:layout_marginBottom="@dimen/glass_card_margin"
+      android:ellipsize="end"
+      android:singleLine="true"
+      android:textAppearance="?android:attr/textAppearanceSmall"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@id/timestamp"
+      app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- The footer view will grow to fit as much content as possible while the
-         timestamp view keeps a fixed width. If the footer text is too long, it
-         will be ellipsized with a 40px margin between it and the timestamp. -->
+  <TextView
+      android:id="@+id/timestamp"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/glass_card_margin"
+      android:layout_marginBottom="@dimen/glass_card_margin"
+      android:ellipsize="end"
+      android:singleLine="true"
+      android:textAlignment="viewEnd"
+      android:textAppearance="?android:attr/textAppearanceSmall"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        android:id="@+id/footer"
-        android:layout_width="0dip"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        />
-
-    <TextView
-        android:id="@+id/timestamp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/glass_card_margin"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        />
-
-  </LinearLayout>
-
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
