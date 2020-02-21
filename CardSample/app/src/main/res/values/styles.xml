@@ -29,4 +29,12 @@
     <item name="android:windowIsTranslucent">true</item>
   </style>
 
+  <style name="MenuTextViewStyle">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:fontFamily">@string/menu_font</item>
+    <item name="android:textSize">@dimen/menu_text_size</item>
+    <item name="android:layout_margin">@dimen/menu_text_margin</item>
+  </style>
+
 </resources>

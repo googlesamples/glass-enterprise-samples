@@ -18,7 +18,6 @@
   <string name="app_name">Card Sample</string>
   <string name="empty_string"/>
   <string name="thin_font">sans-serif-thin</string>
-  <string name="light_font">sans-serif-light</string>
   <string name="footnote_sample">This is the footnote</string>
   <string name="timestamp_sample">just now</string>
   <string name="columns_sample">You can put the centered image inside of the COLUMNS layout.</string>
@@ -28,4 +27,6 @@
   <string name="save">Save</string>
   <string name="delete">Delete</string>
   <string name="like_this_sample">Do you like this sample?\n\nSource code is available at:\ng.co/glass/samples</string>
+  <string name="menu_font">sans-serif-thin</string>
+  <string name="menu_item">Menu item</string>
 </resources>

@@ -49,12 +49,12 @@ public class MainActivity extends BaseActivity {
 
         fragments.add(MainLayoutFragment
             .newInstance(getString(R.string.text_sample), getString(R.string.footnote_sample),
-                getString(R.string.timestamp_sample), R.menu.main_menu));
+                getString(R.string.timestamp_sample), null));
         fragments.add(MainLayoutFragment
             .newInstance(getString(R.string.different_options), getString(R.string.empty_string),
-                getString(R.string.empty_string), R.menu.special_menu));
+                getString(R.string.empty_string), R.menu.main_menu));
         fragments.add(ColumnLayoutFragment
-            .newInstance(R.drawable.ic_note_50, getString(R.string.columns_sample),
+            .newInstance(R.drawable.ic_style, getString(R.string.columns_sample),
                 getString(R.string.footnote_sample), getString(R.string.timestamp_sample)));
         fragments.add(MainLayoutFragment
             .newInstance(getString(R.string.like_this_sample), getString(R.string.empty_string),

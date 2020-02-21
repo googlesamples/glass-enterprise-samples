@@ -18,73 +18,74 @@ package com.example.android.glass.cardsample.menu;
 
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.support.v7.util.DiffUtil;
-
+import android.support.annotation.Nullable;
 import java.util.Objects;
 
 /**
  * Represents the single menu item object.
  */
-class GlassMenuItem {
+public class GlassMenuItem {
 
+  private int id;
   private Drawable icon;
   private String text;
 
   /**
-   * Compares two {@link GlassMenuItem} objects and determines if there is a difference between
-   * them.
-   */
-  public static class ItemDiffComparator extends DiffUtil.ItemCallback<GlassMenuItem> {
-
-    @Override
-    public boolean areItemsTheSame(@NonNull GlassMenuItem oldItem,
-        @NonNull GlassMenuItem newItem) {
-      return oldItem.equals(newItem);
-    }
-
-    @Override
-    public boolean areContentsTheSame(@NonNull GlassMenuItem oldItem,
-        @NonNull GlassMenuItem newItem) {
-      return oldItem.equals(newItem);
-    }
-  }
-
-  /**
    * {@link GlassMenuItem} object is constructed by usage of this method.
    *
+   * @param id is an id of the the current menu item.
    * @param icon is a menu icon {@link Drawable} object.
    * @param text is a String with the menu option label.
    */
-  GlassMenuItem(Drawable icon, String text) {
+  GlassMenuItem(int id, Drawable icon, String text) {
+    this.id = id;
     this.icon = icon;
     this.text = text;
   }
 
   /**
+   * Returns menu item id.
+   */
+  public int getId() {
+    return id;
+  }
+
+  /**
    * Returns menu item icon.
    */
-  Drawable getIcon() {
+  public Drawable getIcon() {
     return icon;
   }
 
   /**
    * Returns menu item label.
    */
-  String getText() {
+  public String getText() {
     return text;
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    GlassMenuItem that = (GlassMenuItem) o;
-    return Objects.equals(icon, that.icon) &&
-            Objects.equals(text, that.text);
+  public int hashCode() {
+    return Objects.hash(id, icon, text);
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(icon, text);
+  public boolean equals(@Nullable Object other) {
+    if (this == other) {
+      return true;
+    }
+    if (!(other instanceof GlassMenuItem)) {
+      return false;
+    }
+    final GlassMenuItem that = (GlassMenuItem) other;
+    return Objects.equals(this.id, that.id) &&
+        Objects.equals(this.icon, that.icon) &&
+        Objects.equals(this.text, that.text);
+  }
+
+  @NonNull
+  @Override
+  public String toString() {
+    return id + " " + icon + " " + text;
   }
 }
