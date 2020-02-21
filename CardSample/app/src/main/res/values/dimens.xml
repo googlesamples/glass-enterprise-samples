@@ -35,4 +35,10 @@
   <!-- The width of the left column in the two-column layout. -->
   <dimen name="glass_card_left_column_width">240dp</dimen>
 
+  <!-- The recommended size for the menu text size. -->
+  <dimen name="menu_text_size">64sp</dimen>
+
+  <!-- The recommended menu text margin. -->
+  <dimen name="menu_text_margin">16dp</dimen>
+
 </resources>
