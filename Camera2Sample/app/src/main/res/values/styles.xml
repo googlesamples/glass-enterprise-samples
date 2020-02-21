@@ -16,12 +16,35 @@
 -->
 <resources>
 
-  <style name="AppTheme" parent="Theme.AppCompat.NoActionBar"/>
+  <style name="AppTheme" parent="Theme.AppCompat.NoActionBar" />
 
   <style name="CameraStyle">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:background">@android:color/black</item>
+  </style>
+
+  <style name="CameraPreviewStyle">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">match_parent</item>
+  </style>
+
+  <style name="IconStyle">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_margin">@dimen/icon_margin</item>
+    <item name="android:padding">@dimen/icon_padding</item>
+    <item name="android:alpha">0.8</item>
+  </style>
+
+  <style name="ShutterIconStyle" parent="IconStyle">
+    <item name="android:background">@drawable/shutter_transition</item>
+    <item name="android:src">@drawable/ic_camera_white</item>
+  </style>
+
+  <style name="VideoIconStyle" parent="IconStyle">
+    <item name="android:background">@drawable/video_transition</item>
+    <item name="android:src">@drawable/recording_transition</item>
   </style>
 
 </resources>
