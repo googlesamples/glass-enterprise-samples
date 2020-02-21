@@ -17,6 +17,7 @@
 package com.example.glass.camera2sample;
 
 import android.content.Context;
+import android.graphics.drawable.TransitionDrawable;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
@@ -37,6 +38,11 @@ public class AnimationManager {
   private static final float ALPHA_MAX = 0.8F;
 
   /**
+   * Transition duration in milliseconds,
+   */
+  private static final int TRANSITION_DURATION_MS = 200;
+
+  /**
    * Animates shutter action on the given {@link ImageView}.
    */
   public static void animateShutter(Context context, ImageView imageView) {
@@ -54,5 +60,20 @@ public class AnimationManager {
         imageView.animate().alpha(ALPHA_MAX);
       }
     });
+  }
+
+  /**
+   * Performs transition on the image background to change highlight of a given {@link ImageView}.
+   *
+   * @param reverse true means reverse transition.
+   */
+  public static void changeBackgroundDrawable(final ImageView imageView, final boolean reverse) {
+    final TransitionDrawable transitionDrawable = (TransitionDrawable) imageView.getBackground();
+
+    if (reverse) {
+      transitionDrawable.reverseTransition(TRANSITION_DURATION_MS);
+    } else {
+      transitionDrawable.startTransition(TRANSITION_DURATION_MS);
+    }
   }
 }
