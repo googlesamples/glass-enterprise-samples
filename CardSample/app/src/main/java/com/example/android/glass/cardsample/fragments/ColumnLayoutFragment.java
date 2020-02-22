@@ -38,6 +38,7 @@ public class ColumnLayoutFragment extends BaseFragment {
   private static final String FOOTER_KEY = "footer_key";
   private static final String TIMESTAMP_KEY = "timestamp_key";
   private static final int TEXT_SIZE = 30;
+  private static final int IMAGE_PADDING = 40;
 
   /**
    * Returns new instance of {@link ColumnLayoutFragment}.
@@ -69,6 +70,7 @@ public class ColumnLayoutFragment extends BaseFragment {
 
     if (getArguments() != null) {
       final ImageView imageView = new ImageView(getActivity());
+      imageView.setPadding(IMAGE_PADDING, IMAGE_PADDING, IMAGE_PADDING, IMAGE_PADDING);
       imageView.setImageResource(getArguments().getInt(IMAGE_KEY));
 
       final FrameLayout leftColumn = view.findViewById(R.id.left_column);
