@@ -33,6 +33,7 @@ public class GlassMenuItem {
   /**
    * {@link GlassMenuItem} object is constructed by usage of this method.
    *
+   * @param id is an id of the the current menu item.
    * @param icon is a menu icon {@link Drawable} object.
    * @param text is a String with the menu option label.
    */
@@ -45,7 +46,7 @@ public class GlassMenuItem {
   /**
    * Returns menu item id.
    */
-  int getId() {
+  public int getId() {
     return id;
   }
 
