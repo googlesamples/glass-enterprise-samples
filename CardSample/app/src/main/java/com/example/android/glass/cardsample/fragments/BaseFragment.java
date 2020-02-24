@@ -19,8 +19,8 @@ package com.example.android.glass.cardsample.fragments;
 import static android.app.Activity.RESULT_OK;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.widget.Toast;
+import androidx.fragment.app.Fragment;
 import com.example.android.glass.cardsample.R;
 import com.example.android.glass.cardsample.menu.MenuActivity;
 
