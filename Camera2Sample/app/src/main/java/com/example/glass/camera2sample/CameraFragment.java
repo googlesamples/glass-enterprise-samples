@@ -137,6 +137,7 @@ public class CameraFragment extends Fragment
   public void onActivityCreated(@Nullable Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     cameraActionHandler = new CameraActionHandler(getContext(), this);
+    cameraActionHandler.handleIntent(Objects.requireNonNull(getActivity()).getIntent());
   }
 
   @Override
