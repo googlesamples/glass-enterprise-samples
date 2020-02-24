@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
  Copyright 2020 Google LLC
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,6 +12,6 @@
  limitations under the License.
 -->
 <resources>
-  <string name="app_name">Voice Recognition Sample</string>
-  <string name="voice_instruction">Tap to start voice recognition</string>
+  <dimen name="default_view_margin">40dp</dimen>
+  <dimen name="margin_bottom">24dp</dimen>
 </resources>
