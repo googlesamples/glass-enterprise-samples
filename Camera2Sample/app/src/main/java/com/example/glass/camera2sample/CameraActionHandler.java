@@ -18,6 +18,7 @@ package com.example.glass.camera2sample;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCaptureSession.CaptureCallback;
@@ -30,6 +31,7 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.ImageReader;
 import android.media.ImageReader.OnImageAvailableListener;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.Surface;
@@ -353,6 +355,26 @@ public class CameraActionHandler implements OnImageAvailableListener {
    */
   public void setPreviewSurface(Surface previewSurface) {
     this.previewSurface = previewSurface;
+  }
+
+  /**
+   * Handles given {@link Intent} and sets appropriate {@link CameraMode} depends on the intent
+   * action.
+   */
+  public void handleIntent(Intent intent) {
+    final String intentAction = intent.getAction();
+    if (intentAction != null) {
+      switch (intentAction) {
+        case MediaStore.ACTION_IMAGE_CAPTURE:
+        case MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA:
+          switchCameraMode(CameraMode.PICTURE);
+          break;
+        case MediaStore.INTENT_ACTION_VIDEO_CAMERA:
+        case MediaStore.ACTION_VIDEO_CAPTURE:
+          switchCameraMode(CameraMode.VIDEO);
+          break;
+      }
+    }
   }
 
   /**
