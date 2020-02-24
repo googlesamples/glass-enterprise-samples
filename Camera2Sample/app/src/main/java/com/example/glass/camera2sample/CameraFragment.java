@@ -27,27 +27,24 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import com.example.glass.camera2sample.CameraActionHandler.CameraActionHandlerCallback;
 import com.example.glass.camera2sample.CameraActionHandler.CameraMode;
 import com.example.glass.ui.GlassGestureDetector;
-
 import java.util.Objects;
 
 /**
  * Fragment responsible for displaying the camera preview and handling camera actions.
  */
 public class CameraFragment extends Fragment
-    implements OnRequestPermissionsResultCallback, GlassGestureDetector.OnGestureListener, CameraActionHandlerCallback {
+    implements OnRequestPermissionsResultCallback, GlassGestureDetector.OnGestureListener,
+    CameraActionHandlerCallback {
 
   private static final String TAG = CameraFragment.class.getSimpleName();
 
@@ -76,6 +73,11 @@ public class CameraFragment extends Fragment
    * An {@link ImageView} for camera shutter image.
    */
   private ImageView shutterImageView;
+
+  /**
+   * An {@link ImageView} for video cam image.
+   */
+  private ImageView videoImageView;
 
   /**
    * {@link CameraActionHandler} for the camera.
@@ -120,27 +122,22 @@ public class CameraFragment extends Fragment
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    final FrameLayout frameLayout = new FrameLayout(
-        Objects.requireNonNull(getContext(), "Context must not be null"));
-    textureView = new TextureView(getContext());
-    frameLayout.addView(textureView);
+    return inflater.inflate(R.layout.camera_layout, container, false);
+  }
 
-    shutterImageView = new ImageView(getContext());
-    shutterImageView.setImageResource(R.drawable.ic_camera_white_96dp);
-
-    final FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
-        LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-    layoutParams.gravity = Gravity.END | Gravity.CENTER_VERTICAL;
-    layoutParams.setMarginEnd(DEFAULT_MARGIN_PX);
-    shutterImageView.setLayoutParams(layoutParams);
-    frameLayout.addView(shutterImageView);
-    return frameLayout;
+  @Override
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    textureView = view.findViewById(R.id.cameraTextureView);
+    shutterImageView = view.findViewById(R.id.cameraImageView);
+    videoImageView = view.findViewById(R.id.videoImageView);
   }
 
   @Override
   public void onActivityCreated(@Nullable Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     cameraActionHandler = new CameraActionHandler(getContext(), this);
+    cameraActionHandler.handleIntent(Objects.requireNonNull(getActivity()).getIntent());
   }
 
   @Override
@@ -252,13 +249,13 @@ public class CameraFragment extends Fragment
   @Override
   public void onVideoRecordingStarted() {
     Log.d(TAG, "Video recording started");
-    AnimationManager.changeImageByAlpha(shutterImageView, R.drawable.ic_videocam_red_96dp);
+    AnimationManager.changeImageByAlpha(videoImageView, R.drawable.ic_videocam_red);
   }
 
   @Override
   public void onVideoRecordingStopped() {
     Log.d(TAG, "Video recording stopped");
-    AnimationManager.changeImageByAlpha(shutterImageView, R.drawable.ic_videocam_white_96dp);
+    AnimationManager.changeImageByAlpha(videoImageView, R.drawable.ic_videocam_white);
   }
 
   @Override
@@ -266,10 +263,12 @@ public class CameraFragment extends Fragment
     Log.d(TAG, "Camera mode changed to " + newCameraMode.name());
     switch (newCameraMode) {
       case VIDEO:
-        AnimationManager.changeImageByAlpha(shutterImageView, R.drawable.ic_videocam_white_96dp);
+        AnimationManager.changeBackgroundDrawable(shutterImageView, false);
+        AnimationManager.changeBackgroundDrawable(videoImageView, false);
         break;
       case PICTURE:
-        AnimationManager.changeImageByAlpha(shutterImageView, R.drawable.ic_camera_white_96dp);
+        AnimationManager.changeBackgroundDrawable(videoImageView, true);
+        AnimationManager.changeBackgroundDrawable(shutterImageView, true);
         break;
     }
   }

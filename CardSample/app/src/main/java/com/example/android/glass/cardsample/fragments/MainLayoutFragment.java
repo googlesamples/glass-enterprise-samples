@@ -16,32 +16,25 @@
 
 package com.example.android.glass.cardsample.fragments;
 
-import static android.app.Activity.RESULT_OK;
-
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.example.android.glass.cardsample.R;
 
 /**
- * Fragment with the main card layout based on the
- * <a href="https://developers.google.com/glass/develop/gdk/card-design#main_layout">
- * Main Layout</a>.
+ * Fragment with the main card layout.
  */
 public class MainLayoutFragment extends BaseFragment {
 
   private static final String TEXT_KEY = "text_key";
   private static final String FOOTER_KEY = "footer_key";
   private static final String TIMESTAMP_KEY = "timestamp_key";
-  private static final String EXTRA_NAME = "title";
   private static final int BODY_TEXT_SIZE = 40;
 
   /**
@@ -78,7 +71,7 @@ public class MainLayoutFragment extends BaseFragment {
       textView.setTextSize(BODY_TEXT_SIZE);
       textView.setTypeface(Typeface.create(getString(R.string.thin_font), Typeface.NORMAL));
 
-      final RelativeLayout bodyLayout = view.findViewById(R.id.body_layout);
+      final FrameLayout bodyLayout = view.findViewById(R.id.body_layout);
       bodyLayout.addView(textView);
 
       final TextView footer = view.findViewById(R.id.footer);
@@ -88,21 +81,5 @@ public class MainLayoutFragment extends BaseFragment {
       timestamp.setText(getArguments().getString(TIMESTAMP_KEY, getString(R.string.empty_string)));
     }
     return view;
-  }
-
-  /**
-   * Code for a response to selected menu item should be placed inside of this method.
-   *
-   * @param requestCode is a code which should match the {@link BaseFragment#REQUEST_CODE}
-   * @param resultCode is a code set by the {@link com.example.android.glass.cardsample.menu.MenuActivity}
-   * @param data is a String passed by the {@link MainLayoutFragment#EXTRA_NAME} key. Refers to the
-   * selected menu option
-   */
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-      Toast.makeText(getActivity(), data.getStringExtra(EXTRA_NAME), Toast.LENGTH_SHORT).show();
-    }
   }
 }

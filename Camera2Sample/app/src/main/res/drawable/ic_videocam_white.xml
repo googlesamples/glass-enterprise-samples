@@ -6,7 +6,7 @@
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+     http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,9 +14,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:id="@+id/add" android:icon="@drawable/ic_add" android:title="@string/add"/>
-  <item android:id="@+id/save" android:icon="@drawable/ic_save" android:title="@string/save"/>
-  <item android:id="@+id/delete" android:icon="@drawable/ic_delete" android:title="@string/delete"/>
-</menu>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/icon_size"
+    android:height="@dimen/icon_size"
+    android:tint="#FFFFFF"
+    android:viewportHeight="24.0"
+    android:viewportWidth="24.0">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M17,10.5V7c0,-0.55 -0.45,-1 -1,-1H4c-0.55,0 -1,0.45 -1,1v10c0,0.55 0.45,1 1,1h12c0.55,0 1,-0.45 1,-1v-3.5l4,4v-11l-4,4z"/>
+</vector>

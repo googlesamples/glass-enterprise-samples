@@ -17,15 +17,15 @@
 package com.example.android.glass.cardsample;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import com.example.android.glass.cardsample.fragments.BaseFragment;
 import com.example.android.glass.cardsample.fragments.ColumnLayoutFragment;
 import com.example.android.glass.cardsample.fragments.MainLayoutFragment;
 import com.example.glass.ui.GlassGestureDetector.Gesture;
+import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,19 +49,19 @@ public class MainActivity extends BaseActivity {
 
         fragments.add(MainLayoutFragment
             .newInstance(getString(R.string.text_sample), getString(R.string.footnote_sample),
-                getString(R.string.timestamp_sample), R.menu.main_menu));
+                getString(R.string.timestamp_sample), null));
         fragments.add(MainLayoutFragment
             .newInstance(getString(R.string.different_options), getString(R.string.empty_string),
-                getString(R.string.empty_string), R.menu.special_menu));
+                getString(R.string.empty_string), R.menu.main_menu));
         fragments.add(ColumnLayoutFragment
-            .newInstance(R.drawable.ic_note_50, getString(R.string.columns_sample),
+            .newInstance(R.drawable.ic_style, getString(R.string.columns_sample),
                 getString(R.string.footnote_sample), getString(R.string.timestamp_sample)));
         fragments.add(MainLayoutFragment
             .newInstance(getString(R.string.like_this_sample), getString(R.string.empty_string),
                 getString(R.string.empty_string), null));
 
         screenSlidePagerAdapter.notifyDataSetChanged();
-        
+
         final TabLayout tabLayout = findViewById(R.id.page_indicator);
         tabLayout.setupWithViewPager(viewPager, true);
     }
