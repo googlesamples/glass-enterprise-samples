@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2020 Google LLC
  *
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements
     super.onActivityResult(requestCode, resultCode, data);
 
     if (resultCode == RESULT_OK) {
-      List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+      final List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
       Log.d(TAG, "results: " + results.toString());
       if (results != null && results.size() > 0 && !results.get(0).isEmpty()) {
         updateUI(results.get(0));
@@ -73,18 +72,17 @@ public class MainActivity extends AppCompatActivity implements
     switch (gesture) {
       case TAP:
         requestVoiceRecognition();
-        break;
+        return true;
       case SWIPE_DOWN:
         finish();
-        break;
+        return true;
       default:
         return false;
     }
-    return true;
   }
 
   private void requestVoiceRecognition() {
-    Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+    final Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
     intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
         RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
     startActivityForResult(intent, REQUEST_CODE);
@@ -95,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements
       mVoiceResults.remove(mVoiceResults.size() - 1);
     }
     mVoiceResults.add(0, result);
-    String recognizedText = String.join(DELIMITER, mVoiceResults);
+    final String recognizedText = String.join(DELIMITER, mVoiceResults);
     resultTextView.setText(recognizedText);
   }
 }

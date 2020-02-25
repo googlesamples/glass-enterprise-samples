@@ -21,13 +21,13 @@
   </style>
 
   <style name="HeaderText">
-    <item name="android:textSize">34sp</item>
+    <item name="android:textSize">@dimen/instruction_text_size</item>
     <item name="android:gravity">center</item>
     <item name="android:fontFamily">sans-serif-thin</item>
   </style>
 
   <style name="VoiceResultsText">
-    <item name="android:textSize">28sp</item>
+    <item name="android:textSize">@dimen/voice_results_text_size</item>
     <item name="android:lineSpacingMultiplier">1.5</item>
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:layout_marginBottom">@dimen/margin_bottom</item>

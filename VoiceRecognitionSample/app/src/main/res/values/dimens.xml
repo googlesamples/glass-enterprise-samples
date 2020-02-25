@@ -14,4 +14,6 @@
 <resources>
   <dimen name="default_view_margin">40dp</dimen>
   <dimen name="margin_bottom">24dp</dimen>
+  <dimen name="instruction_text_size">34sp</dimen>
+  <dimen name="voice_results_text_size">28sp</dimen>
 </resources>
