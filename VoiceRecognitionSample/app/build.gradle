@@ -19,7 +19,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.example.glass.camera2sample"
+        applicationId "com.example.glass.voicerecognitionsample"
         minSdkVersion 27
         targetSdkVersion 28
         versionCode 1
