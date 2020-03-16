@@ -1,6 +1,6 @@
 # Glass Samples
 
-This repository contains sample code for Google Glass Enterprise Edition 2 (EE2). This repository is provided for example purposes only.
+This repository contains sample code for Google [Glass Enterprise Edition 2](https://developers.google.com/glass-enterprise) (EE2). This repository is provided for example purposes only.
 
 ## Getting The Code
 
