@@ -64,40 +64,40 @@ public class GlassGestureDetectorTest {
   }
 
   @Test
-  public void onTouchEvent() {
+  public void testOnTouchEvent() {
     assertFalse(glassGestureDetector.onTouchEvent(motionEvent));
   }
 
   @Test
-  public void onDown() {
+  public void testOnDown() {
     assertFalse(glassGestureDetector.onDown(motionEvent));
   }
 
   @Test
-  public void onShowPress() {
+  public void testOnShowPress() {
     glassGestureDetector.onShowPress(motionEvent);
   }
 
   @Test
-  public void onSingleTapUp() {
+  public void testOnSingleTapUp() {
     assertTrue(glassGestureDetector.onSingleTapUp(motionEvent));
     assertEquals(Gesture.TAP, detectedGesture);
   }
 
   @Test
-  public void onScroll() {
+  public void testOnScroll() {
     assertFalse(
         glassGestureDetector.onScroll(motionEvent, motionEvent, TWICE_SWIPE_DISTANCE_THRESHOLD_PX,
             TWICE_SWIPE_DISTANCE_THRESHOLD_PX));
   }
 
   @Test
-  public void onLongPress() {
+  public void testOnLongPress() {
     glassGestureDetector.onLongPress(motionEvent);
   }
 
   @Test
-  public void onFlingTestSwipeDown() {
+  public void testOnFlingTestSwipeDown() {
     assertFalse(glassGestureDetector
         .onFling(motionEvent, getMotionEventForGesture(Gesture.SWIPE_DOWN),
             HALF_SWIPE_VELOCITY_THRESHOLD_PX,
@@ -110,7 +110,7 @@ public class GlassGestureDetectorTest {
   }
 
   @Test
-  public void onFlingTestSwipeUp() {
+  public void testOnFlingTestSwipeUp() {
     assertFalse(glassGestureDetector
         .onFling(motionEvent, getMotionEventForGesture(Gesture.SWIPE_UP),
             HALF_SWIPE_VELOCITY_THRESHOLD_PX,
@@ -123,7 +123,7 @@ public class GlassGestureDetectorTest {
   }
 
   @Test
-  public void onFlingTestSwipeForward() {
+  public void testOnFlingTestSwipeForward() {
     assertFalse(glassGestureDetector
         .onFling(motionEvent, getMotionEventForGesture(Gesture.SWIPE_FORWARD),
             HALF_SWIPE_VELOCITY_THRESHOLD_PX,
@@ -136,7 +136,7 @@ public class GlassGestureDetectorTest {
   }
 
   @Test
-  public void onFlingTestSwipeBackward() {
+  public void testOnFlingTestSwipeBackward() {
     assertFalse(glassGestureDetector
         .onFling(motionEvent, getMotionEventForGesture(Gesture.SWIPE_BACKWARD),
             HALF_SWIPE_VELOCITY_THRESHOLD_PX,
@@ -149,7 +149,7 @@ public class GlassGestureDetectorTest {
   }
 
   @Test
-  public void onFlingTestTooSmallDistance() {
+  public void testOnFlingTestTooSmallDistance() {
     final MotionEvent endMotionEvent = MotionEvent
         .obtain(DOWN_TIME, EVENT_TIME, ACTION,
             motionEvent.getX() + HALF_SWIPE_DISTANCE_THRESHOLD_PX,
@@ -284,6 +284,15 @@ public class GlassGestureDetectorTest {
     public boolean onGesture(Gesture gesture) {
       detectedGesture = gesture;
       return true;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+      return true;
+    }
+
+    @Override
+    public void onTouchEnded() {
     }
   }
 }

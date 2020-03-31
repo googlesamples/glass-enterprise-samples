@@ -45,9 +45,31 @@ public class GlassGestureDetector implements GestureDetector.OnGestureListener {
      * Should notify about detected gesture.
      *
      * @param gesture is a detected gesture.
-     * @return TRUE if gesture is handled by the medhod. FALSE otherwise.
+     * @return TRUE if gesture is handled by the method. FALSE otherwise.
      */
     boolean onGesture(Gesture gesture);
+
+    /**
+     * Notifies when a scroll occurs with the initial on down {@link MotionEvent} and the current
+     * move {@link MotionEvent}. The distance in x and y is also supplied for convenience.
+     *
+     * @param e1 The first down motion event that started the scrolling.
+     * @param e2 The move motion event that triggered the current onScroll.
+     * @param distanceX The distance along the X axis that has been scrolled since the last call to
+     * onScroll. This is NOT the distance between {@code e1} and {@code e2}.
+     * @param distanceY The distance along the Y axis that has been scrolled since the last call to
+     * onScroll. This is NOT the distance between {@code e1} and {@code e2}.
+     * @return true if the event is consumed, else false
+     */
+    default boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+      return false;
+    }
+
+    /**
+     * Notifies when touch is ended.
+     */
+    default void onTouchEnded() {
+    }
   }
 
   static final int SWIPE_DISTANCE_THRESHOLD_PX = 100;
@@ -69,12 +91,16 @@ public class GlassGestureDetector implements GestureDetector.OnGestureListener {
   }
 
   /**
-   * Passes the {@link MotionEvent} object from the activity to the Android {@link GestureDetector}.
+   * Passes the {@link MotionEvent} object from the activity to the Android {@link
+   * GestureDetector}.
    *
    * @param motionEvent is a detected {@link MotionEvent} object.
    * @return TRUE if event is handled by the Android {@link GestureDetector}. FALSE otherwise.
    */
   public boolean onTouchEvent(MotionEvent motionEvent) {
+    if (motionEvent.getActionMasked() == MotionEvent.ACTION_UP) {
+      onGestureListener.onTouchEnded();
+    }
     return gestureDetector.onTouchEvent(motionEvent);
   }
 
@@ -94,7 +120,7 @@ public class GlassGestureDetector implements GestureDetector.OnGestureListener {
 
   @Override
   public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-    return false;
+    return onGestureListener.onScroll(e1, e2, distanceX, distanceY);
   }
 
   @Override
@@ -130,10 +156,11 @@ public class GlassGestureDetector implements GestureDetector.OnGestureListener {
   public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
     final float deltaX = e2.getX() - e1.getX();
     final float deltaY = e2.getY() - e1.getY();
-    final double tan = deltaX != 0 ? Math.abs(deltaY/deltaX) : Double.MAX_VALUE;
+    final double tan = deltaX != 0 ? Math.abs(deltaY / deltaX) : Double.MAX_VALUE;
 
     if (tan > TAN_ANGLE_DEGREES) {
-      if (Math.abs(deltaY) < SWIPE_DISTANCE_THRESHOLD_PX || Math.abs(velocityY) < SWIPE_VELOCITY_THRESHOLD_PX) {
+      if (Math.abs(deltaY) < SWIPE_DISTANCE_THRESHOLD_PX
+              || Math.abs(velocityY) < SWIPE_VELOCITY_THRESHOLD_PX) {
         return false;
       } else if (deltaY < 0) {
         return onGestureListener.onGesture(Gesture.SWIPE_UP);
@@ -141,7 +168,8 @@ public class GlassGestureDetector implements GestureDetector.OnGestureListener {
         return onGestureListener.onGesture(Gesture.SWIPE_DOWN);
       }
     } else {
-      if (Math.abs(deltaX) < SWIPE_DISTANCE_THRESHOLD_PX || Math.abs(velocityX) < SWIPE_VELOCITY_THRESHOLD_PX) {
+      if (Math.abs(deltaX) < SWIPE_DISTANCE_THRESHOLD_PX
+              || Math.abs(velocityX) < SWIPE_VELOCITY_THRESHOLD_PX) {
         return false;
       } else if (deltaX < 0) {
         return onGestureListener.onGesture(Gesture.SWIPE_FORWARD);
