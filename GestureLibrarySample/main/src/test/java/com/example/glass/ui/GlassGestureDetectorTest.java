@@ -16,18 +16,27 @@
 
 package com.example.glass.ui;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import android.content.Context;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
+
 import com.example.glass.ui.GlassGestureDetector.Gesture;
 import com.example.glass.ui.GlassGestureDetector.OnGestureListener;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
+
+import static com.example.glass.ui.MotionEventGenerator.getActionCancel;
+import static com.example.glass.ui.MotionEventGenerator.getActionDown;
+import static com.example.glass.ui.MotionEventGenerator.getActionMove;
+import static com.example.glass.ui.MotionEventGenerator.getActionUp;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
 public class GlassGestureDetectorTest {
@@ -50,17 +59,28 @@ public class GlassGestureDetectorTest {
   private static final float ANGLE_EPSILON_DEGREES = 0.1F;
   private static final float ANGLE_60_DEGREES = 60;
   private static final float ANGLE_120_DEGREES = 120;
+  private static final double DELTA = 1e-15;
 
   private GlassGestureDetector glassGestureDetector;
   private MotionEvent motionEvent;
   private Gesture detectedGesture;
+  private boolean isTouchEnded;
+  private boolean isScrolling;
+  private float scrollingDistanceX;
+  private float scrollingDistanceY;
+  private int touchSlop;
 
   @Before
   public void setUp() {
-    glassGestureDetector = new GlassGestureDetector(RuntimeEnvironment.systemContext,
-        new GestureListener());
+    final Context context = RuntimeEnvironment.application;
+    glassGestureDetector = new GlassGestureDetector(context, new GestureListener());
     motionEvent = MotionEvent
         .obtain(DOWN_TIME, EVENT_TIME, ACTION, INITIAL_X, INITIAL_Y, META_STATE);
+    isTouchEnded = false;
+    isScrolling = false;
+    scrollingDistanceX = 0;
+    scrollingDistanceY = 0;
+    touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
   }
 
   @Test
@@ -86,9 +106,49 @@ public class GlassGestureDetectorTest {
 
   @Test
   public void testOnScroll() {
+    assertFalse(isScrolling);
     assertFalse(
         glassGestureDetector.onScroll(motionEvent, motionEvent, TWICE_SWIPE_DISTANCE_THRESHOLD_PX,
             TWICE_SWIPE_DISTANCE_THRESHOLD_PX));
+    assertTrue(isScrolling);
+    assertEquals(TWICE_SWIPE_DISTANCE_THRESHOLD_PX, scrollingDistanceX, DELTA);
+    assertEquals(TWICE_SWIPE_DISTANCE_THRESHOLD_PX, scrollingDistanceY, DELTA);
+  }
+
+  @Test
+  public void testScrolling() {
+    assertFalse(isScrolling);
+    glassGestureDetector.onTouchEvent(getActionDown());
+    assertFalse(isScrolling);
+    glassGestureDetector.onTouchEvent(
+        getActionMove(INITIAL_X, INITIAL_Y - TWICE_SWIPE_DISTANCE_THRESHOLD_PX));
+    assertTrue(isScrolling);
+    assertEquals(0, scrollingDistanceX, DELTA);
+    assertEquals(TWICE_SWIPE_DISTANCE_THRESHOLD_PX, scrollingDistanceY, DELTA);
+    glassGestureDetector.onTouchEvent(
+        getActionUp(INITIAL_X, INITIAL_Y - TWICE_SWIPE_DISTANCE_THRESHOLD_PX));
+    assertTrue(isScrolling);
+    assertEquals(0, scrollingDistanceX, DELTA);
+    assertEquals(TWICE_SWIPE_DISTANCE_THRESHOLD_PX, scrollingDistanceY, DELTA);
+    assertEquals(Gesture.SWIPE_UP, detectedGesture);
+  }
+
+  @Test
+  public void testScrollingSmallDistance() {
+    assertFalse(isScrolling);
+    glassGestureDetector.onTouchEvent(getActionDown());
+    assertFalse(isScrolling);
+    glassGestureDetector.onTouchEvent(
+        getActionMove(INITIAL_X, INITIAL_Y - HALF_SWIPE_DISTANCE_THRESHOLD_PX));
+    assertTrue(isScrolling);
+    assertEquals(0, scrollingDistanceX, DELTA);
+    assertEquals(HALF_SWIPE_DISTANCE_THRESHOLD_PX, scrollingDistanceY, DELTA);
+    glassGestureDetector.onTouchEvent(
+        getActionUp(INITIAL_X, INITIAL_Y - HALF_SWIPE_DISTANCE_THRESHOLD_PX));
+    assertTrue(isScrolling);
+    assertEquals(0, scrollingDistanceX, DELTA);
+    assertEquals(HALF_SWIPE_DISTANCE_THRESHOLD_PX, scrollingDistanceY, DELTA);
+    assertNull(detectedGesture);
   }
 
   @Test
@@ -160,24 +220,94 @@ public class GlassGestureDetectorTest {
   }
 
   @Test
+  public void testTapGesture() {
+    assertNull(detectedGesture);
+    assertFalse(glassGestureDetector.onTouchEvent(getActionDown()));
+    assertNull(detectedGesture);
+    assertFalse(glassGestureDetector.onTouchEvent(getActionMove(INITIAL_X, INITIAL_Y)));
+    assertNull(detectedGesture);
+    assertTrue(glassGestureDetector.onTouchEvent(getActionUp(INITIAL_X, INITIAL_Y)));
+    assertEquals(Gesture.TAP, detectedGesture);
+  }
+
+  @Test
+  public void testOnTouchEnded() {
+    assertFalse(isTouchEnded);
+    glassGestureDetector.onTouchEvent(getActionDown());
+    assertFalse(isTouchEnded);
+    glassGestureDetector.onTouchEvent(getActionMove(INITIAL_X, INITIAL_Y));
+    assertFalse(isTouchEnded);
+    glassGestureDetector.onTouchEvent(getActionUp(INITIAL_X, INITIAL_Y));
+    assertTrue(isTouchEnded);
+  }
+
+  @Test
+  public void testInTapRegion() {
+    final int inTapRegionDistance = touchSlop - 1;
+    assertNull(detectedGesture);
+    assertFalse(glassGestureDetector.onTouchEvent(getActionDown()));
+    assertNull(detectedGesture);
+    assertFalse(glassGestureDetector
+        .onTouchEvent(getActionMove(INITIAL_X, INITIAL_Y - inTapRegionDistance)));
+    assertNull(detectedGesture);
+    assertTrue(
+        glassGestureDetector.onTouchEvent(getActionUp(INITIAL_X, INITIAL_Y - inTapRegionDistance)));
+    assertEquals(Gesture.TAP, detectedGesture);
+  }
+
+  @Test
+  public void testNotInTapRegion() {
+    final int notInTapRegionDistance = touchSlop + 1;
+    assertNull(detectedGesture);
+    assertFalse(glassGestureDetector.onTouchEvent(getActionDown()));
+    assertNull(detectedGesture);
+    assertFalse(glassGestureDetector
+        .onTouchEvent(getActionMove(INITIAL_X, INITIAL_Y - notInTapRegionDistance)));
+    assertNull(detectedGesture);
+    assertFalse(glassGestureDetector
+        .onTouchEvent(getActionUp(INITIAL_X, INITIAL_Y - notInTapRegionDistance)));
+    assertNull(detectedGesture);
+  }
+
+  @Test
+  public void testCancelledTapGesture() {
+    assertFalse(glassGestureDetector.onTouchEvent(getActionDown()));
+    assertFalse(glassGestureDetector.onTouchEvent(getActionMove(INITIAL_X, INITIAL_Y)));
+    assertFalse(glassGestureDetector.onTouchEvent(getActionCancel()));
+    assertFalse(glassGestureDetector.onTouchEvent(getActionUp(INITIAL_X, INITIAL_Y)));
+    assertNull(detectedGesture);
+  }
+
+  @Test
+  public void testCancelledSwipeGesture() {
+    assertFalse(glassGestureDetector.onTouchEvent(getActionDown()));
+    assertFalse(glassGestureDetector.onTouchEvent(getActionCancel()));
+    assertFalse(glassGestureDetector.onTouchEvent(
+        getActionMove(INITIAL_X, INITIAL_Y + TWICE_SWIPE_DISTANCE_THRESHOLD_PX)));
+    assertFalse(glassGestureDetector.onTouchEvent(
+        getActionUp(INITIAL_X, INITIAL_Y + TWICE_SWIPE_DISTANCE_THRESHOLD_PX)));
+    assertNull(detectedGesture);
+  }
+
+  @Test
   public void testAngleSwipeForward() {
     final float endX = INITIAL_X - (float) (TWICE_SWIPE_DISTANCE_THRESHOLD_PX / getAbsTanDegrees(
         ANGLE_120_DEGREES));
 
     // 120 degrees
-    final MotionEvent endMotionEvent = MotionEvent
-        .obtain(DOWN_TIME, EVENT_TIME, ACTION, endX, INITIAL_Y - TWICE_SWIPE_DISTANCE_THRESHOLD_PX,
-            META_STATE);
-    glassGestureDetector.onFling(motionEvent, endMotionEvent, TWICE_SWIPE_VELOCITY_THRESHOLD_PX,
-        TWICE_SWIPE_VELOCITY_THRESHOLD_PX);
+    assertFalse(glassGestureDetector.onTouchEvent(getActionDown()));
+    assertFalse(glassGestureDetector.onTouchEvent(
+        getActionMove(endX, INITIAL_Y - TWICE_SWIPE_DISTANCE_THRESHOLD_PX)));
+    assertTrue(glassGestureDetector.onTouchEvent(
+        getActionUp(endX, INITIAL_Y - TWICE_SWIPE_DISTANCE_THRESHOLD_PX)));
     assertEquals(Gesture.SWIPE_FORWARD, detectedGesture);
 
     // -120 degrees
-    final MotionEvent endMotionEvent2 = MotionEvent
-        .obtain(DOWN_TIME, EVENT_TIME, ACTION, endX, INITIAL_Y + TWICE_SWIPE_DISTANCE_THRESHOLD_PX,
-            META_STATE);
-    glassGestureDetector.onFling(motionEvent, endMotionEvent2, TWICE_SWIPE_VELOCITY_THRESHOLD_PX,
-        TWICE_SWIPE_VELOCITY_THRESHOLD_PX);
+    assertFalse(glassGestureDetector.onTouchEvent(getActionDown()));
+    assertFalse(glassGestureDetector.onTouchEvent(
+        getActionMove(endX, INITIAL_Y + TWICE_SWIPE_DISTANCE_THRESHOLD_PX)));
+    assertTrue(glassGestureDetector.onTouchEvent(
+        getActionUp(endX, INITIAL_Y + TWICE_SWIPE_DISTANCE_THRESHOLD_PX)));
     assertEquals(Gesture.SWIPE_FORWARD, detectedGesture);
   }
 
@@ -187,19 +317,19 @@ public class GlassGestureDetectorTest {
         ANGLE_60_DEGREES));
 
     // SWIPE_BACKWARD will be detected if movement angle is smaller or equal 60 degrees clockwise from X axis
-    final MotionEvent endMotionEvent = MotionEvent
-        .obtain(DOWN_TIME, EVENT_TIME, ACTION, endX, INITIAL_Y - TWICE_SWIPE_DISTANCE_THRESHOLD_PX,
-            META_STATE);
-    glassGestureDetector.onFling(motionEvent, endMotionEvent, TWICE_SWIPE_VELOCITY_THRESHOLD_PX,
-        TWICE_SWIPE_VELOCITY_THRESHOLD_PX);
+    assertFalse(glassGestureDetector.onTouchEvent(getActionDown()));
+    assertFalse(glassGestureDetector.onTouchEvent(
+        getActionMove(endX, INITIAL_Y - TWICE_SWIPE_DISTANCE_THRESHOLD_PX)));
+    assertTrue(glassGestureDetector.onTouchEvent(
+        getActionUp(endX, INITIAL_Y - TWICE_SWIPE_DISTANCE_THRESHOLD_PX)));
     assertEquals(Gesture.SWIPE_BACKWARD, detectedGesture);
 
     // SWIPE_BACKWARD will be detected if movement angle is smaller or equal -60 degrees counterclockwise from X axis
-    final MotionEvent endMotionEvent2 = MotionEvent
-        .obtain(DOWN_TIME, EVENT_TIME, ACTION, endX, INITIAL_Y + TWICE_SWIPE_DISTANCE_THRESHOLD_PX,
-            META_STATE);
-    glassGestureDetector.onFling(motionEvent, endMotionEvent2, TWICE_SWIPE_VELOCITY_THRESHOLD_PX,
-        TWICE_SWIPE_VELOCITY_THRESHOLD_PX);
+    assertFalse(glassGestureDetector.onTouchEvent(getActionDown()));
+    assertFalse(glassGestureDetector.onTouchEvent(
+        getActionMove(endX, INITIAL_Y + TWICE_SWIPE_DISTANCE_THRESHOLD_PX)));
+    glassGestureDetector.onTouchEvent(
+        getActionUp(endX, INITIAL_Y + TWICE_SWIPE_DISTANCE_THRESHOLD_PX));
     assertEquals(Gesture.SWIPE_BACKWARD, detectedGesture);
   }
 
@@ -208,21 +338,21 @@ public class GlassGestureDetectorTest {
     // SWIPE_UP gesture will be detected if movement angle is greater than 60 degrees clockwise from X axis
     final float endX = INITIAL_X - (float) (TWICE_SWIPE_DISTANCE_THRESHOLD_PX / getAbsTanDegrees(
         ANGLE_60_DEGREES + ANGLE_EPSILON_DEGREES));
-    final MotionEvent endMotionEvent = MotionEvent
-        .obtain(DOWN_TIME, EVENT_TIME, ACTION, endX, INITIAL_Y - TWICE_SWIPE_DISTANCE_THRESHOLD_PX,
-            META_STATE);
-    glassGestureDetector.onFling(motionEvent, endMotionEvent, TWICE_SWIPE_VELOCITY_THRESHOLD_PX,
-        TWICE_SWIPE_VELOCITY_THRESHOLD_PX);
+    assertFalse(glassGestureDetector.onTouchEvent(getActionDown()));
+    assertFalse(glassGestureDetector.onTouchEvent(
+        getActionMove(endX, INITIAL_Y - TWICE_SWIPE_DISTANCE_THRESHOLD_PX)));
+    assertTrue(glassGestureDetector.onTouchEvent(
+        getActionUp(endX, INITIAL_Y - TWICE_SWIPE_DISTANCE_THRESHOLD_PX)));
     assertEquals(Gesture.SWIPE_UP, detectedGesture);
 
     // SWIPE_UP gesture will be detected if movement angle is smaller than 120 degrees clockwise from X axis
     final float endX2 = INITIAL_X + (float) (TWICE_SWIPE_DISTANCE_THRESHOLD_PX / getAbsTanDegrees(
         ANGLE_120_DEGREES - ANGLE_EPSILON_DEGREES));
-    final MotionEvent endMotionEvent2 = MotionEvent
-        .obtain(DOWN_TIME, EVENT_TIME, ACTION, endX2, INITIAL_Y - TWICE_SWIPE_DISTANCE_THRESHOLD_PX,
-            META_STATE);
-    glassGestureDetector.onFling(motionEvent, endMotionEvent2, TWICE_SWIPE_VELOCITY_THRESHOLD_PX,
-        TWICE_SWIPE_VELOCITY_THRESHOLD_PX);
+    assertFalse(glassGestureDetector.onTouchEvent(getActionDown()));
+    assertFalse(glassGestureDetector.onTouchEvent(
+        getActionMove(endX2, INITIAL_Y - TWICE_SWIPE_DISTANCE_THRESHOLD_PX)));
+    assertTrue(glassGestureDetector.onTouchEvent(
+        getActionUp(endX2, INITIAL_Y - TWICE_SWIPE_DISTANCE_THRESHOLD_PX)));
     assertEquals(Gesture.SWIPE_UP, detectedGesture);
   }
 
@@ -231,21 +361,21 @@ public class GlassGestureDetectorTest {
     // SWIPE_DOWN will be detected if movement angle is greater than 60 degrees counterclockwise from X axis
     final float endX = INITIAL_X - (float) (TWICE_SWIPE_DISTANCE_THRESHOLD_PX / getAbsTanDegrees(
         ANGLE_60_DEGREES + ANGLE_EPSILON_DEGREES));
-    final MotionEvent endMotionEvent = MotionEvent
-        .obtain(DOWN_TIME, EVENT_TIME, ACTION, endX, INITIAL_Y + TWICE_SWIPE_DISTANCE_THRESHOLD_PX,
-            META_STATE);
-    glassGestureDetector.onFling(motionEvent, endMotionEvent, TWICE_SWIPE_VELOCITY_THRESHOLD_PX,
-        TWICE_SWIPE_VELOCITY_THRESHOLD_PX);
+    assertFalse(glassGestureDetector.onTouchEvent(getActionDown()));
+    assertFalse(glassGestureDetector.onTouchEvent(
+        getActionMove(endX, INITIAL_Y + TWICE_SWIPE_DISTANCE_THRESHOLD_PX)));
+    assertTrue(glassGestureDetector.onTouchEvent(
+        getActionUp(endX, INITIAL_Y + TWICE_SWIPE_DISTANCE_THRESHOLD_PX)));
     assertEquals(Gesture.SWIPE_DOWN, detectedGesture);
 
     // SWIPE_DOWN will be detected if movement angle is smaller than 120 degrees counterclockwise from X axis
     final float endX2 = INITIAL_X + (float) (TWICE_SWIPE_DISTANCE_THRESHOLD_PX / getAbsTanDegrees(
         ANGLE_120_DEGREES - ANGLE_EPSILON_DEGREES));
-    final MotionEvent endMotionEvent2 = MotionEvent
-        .obtain(DOWN_TIME, EVENT_TIME, ACTION, endX2, INITIAL_Y + TWICE_SWIPE_DISTANCE_THRESHOLD_PX,
-            META_STATE);
-    glassGestureDetector.onFling(motionEvent, endMotionEvent2, TWICE_SWIPE_VELOCITY_THRESHOLD_PX,
-        TWICE_SWIPE_VELOCITY_THRESHOLD_PX);
+    assertFalse(glassGestureDetector.onTouchEvent(getActionDown()));
+    assertFalse(glassGestureDetector.onTouchEvent(
+        getActionMove(endX2, INITIAL_Y + TWICE_SWIPE_DISTANCE_THRESHOLD_PX)));
+    assertTrue(glassGestureDetector.onTouchEvent(
+        getActionUp(endX2, INITIAL_Y + TWICE_SWIPE_DISTANCE_THRESHOLD_PX)));
     assertEquals(Gesture.SWIPE_DOWN, detectedGesture);
   }
 
@@ -288,11 +418,15 @@ public class GlassGestureDetectorTest {
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-      return true;
+      isScrolling = true;
+      scrollingDistanceX = distanceX;
+      scrollingDistanceY = distanceY;
+      return false;
     }
 
     @Override
     public void onTouchEnded() {
+      isTouchEnded = true;
     }
   }
 }
