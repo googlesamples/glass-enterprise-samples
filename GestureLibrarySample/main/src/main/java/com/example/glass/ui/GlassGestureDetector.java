@@ -24,8 +24,49 @@ import android.view.ViewConfiguration;
 
 /**
  * Gesture detector for Google Glass usage purposes.
+ *
+ * It detects one and two finger gestures like:
+ * <ul>
+ *   <li>TAP</li>
+ *   <li>TWO_FINGER_TAP</li>
+ *   <li>SWIPE_FORWARD</li>
+ *   <li>TWO_FINGER_SWIPE_FORWARD</li>
+ *   <li>SWIPE_BACKWARD</li>
+ *   <li>TWO_FINGER_SWIPE_BACKWARD</li>
+ *   <li>SWIPE_UP</li>
+ *   <li>TWO_FINGER_SWIPE_UP</li>
+ *   <li>SWIPE_DOWN</li>
+ *   <li>TWO_FINGER_SWIPE_DOWN</li>
+ * </ul>
+ *
+ * Swipe detection depends on the:
+ * <ul>
+ *   <li>movement tan value</li>
+ *   <li>movement distance</li>
+ *   <li>movement velocity</li>
+ * </ul>
+ *
+ * To prevent unintentional SWIPE_DOWN, TWO_FINGER_SWIPE_DOWN, SWIPE_UP and TWO_FINGER_SWIPE_UP
+ * gestures, they are detected if movement angle is only between 60 and 120 degrees to the
+ * Glass touchpad horizontal axis.
+ * Any other detected swipes, will be considered as SWIPE_FORWARD and SWIPE_BACKWARD gestures,
+ * depends on the sign of the axis x movement value.
+ *
+ *           ______________________________________________________________
+ *          |                     \        UP         /                    |
+ *          |                       \               /                      |
+ *          |                         60         120                       |
+ *          |                           \       /                          |
+ *          |                             \   /                            |
+ *          |  BACKWARD  <-------  0  ------------  180  ------>  FORWARD  |
+ *          |                             /   \                            |
+ *          |                           /       \                          |
+ *          |                         60         120                       |
+ *          |                       /               \                      |
+ *          |                     /       DOWN        \                    |
+ *           --------------------------------------------------------------
  */
-public class GlassGestureDetector implements GestureDetector.OnGestureListener {
+public class GlassGestureDetector {
 
   /**
    * Currently handled gestures.
@@ -208,81 +249,6 @@ public class GlassGestureDetector implements GestureDetector.OnGestureListener {
         break;
     }
     return handled;
-  }
-
-  @Override
-  public boolean onDown(MotionEvent e) {
-    return false;
-  }
-
-  @Override
-  public void onShowPress(MotionEvent e) {
-  }
-
-  @Override
-  public boolean onSingleTapUp(MotionEvent e) {
-    return onGestureListener.onGesture(Gesture.TAP);
-  }
-
-  @Override
-  public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-    return onGestureListener.onScroll(e1, e2, distanceX, distanceY);
-  }
-
-  @Override
-  public void onLongPress(MotionEvent e) {
-  }
-
-  /**
-   * Swipe detection depends on the:
-   * - movement tan value,
-   * - movement distance,
-   * - movement velocity.
-   *
-   * To prevent unintentional SWIPE_DOWN and SWIPE_UP gestures, they are detected if movement
-   * angle is only between 60 and 120 degrees.
-   * Any other detected swipes, will be considered as SWIPE_FORWARD and SWIPE_BACKWARD, depends
-   * on deltaX value sign.
-   *
-   *           ______________________________________________________________
-   *          |                     \        UP         /                    |
-   *          |                       \               /                      |
-   *          |                         60         120                       |
-   *          |                           \       /                          |
-   *          |                             \   /                            |
-   *          |  BACKWARD  <-------  0  ------------  180  ------>  FORWARD  |
-   *          |                             /   \                            |
-   *          |                           /       \                          |
-   *          |                         60         120                       |
-   *          |                       /               \                      |
-   *          |                     /       DOWN        \                    |
-   *           --------------------------------------------------------------
-   */
-  @Override
-  public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-    final float deltaX = e2.getX() - e1.getX();
-    final float deltaY = e2.getY() - e1.getY();
-    final double tan = deltaX != 0 ? Math.abs(deltaY / deltaX) : Double.MAX_VALUE;
-
-    if (tan > TAN_ANGLE_DEGREES) {
-      if (Math.abs(deltaY) < SWIPE_DISTANCE_THRESHOLD_PX
-          || Math.abs(velocityY) < SWIPE_VELOCITY_THRESHOLD_PX) {
-        return false;
-      } else if (deltaY < 0) {
-        return onGestureListener.onGesture(Gesture.SWIPE_UP);
-      } else {
-        return onGestureListener.onGesture(Gesture.SWIPE_DOWN);
-      }
-    } else {
-      if (Math.abs(deltaX) < SWIPE_DISTANCE_THRESHOLD_PX
-          || Math.abs(velocityX) < SWIPE_VELOCITY_THRESHOLD_PX) {
-        return false;
-      } else if (deltaX < 0) {
-        return onGestureListener.onGesture(Gesture.SWIPE_FORWARD);
-      } else {
-        return onGestureListener.onGesture(Gesture.SWIPE_BACKWARD);
-      }
-    }
   }
 
   private boolean detectGesture() {
