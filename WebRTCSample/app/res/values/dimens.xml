@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright 2020 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<resources>
+
+  <!-- The recommended margin for the top, left, and right edges of a card. -->
+  <dimen name="glass_card_margin">40dp</dimen>
+
+  <!-- The recommended margin between the bottom of the card and the footer. This is
+       an adjusted value so that the baseline of the text in the footer sits 40px
+       from the bottom of the card, matching the other margins. -->
+  <dimen name="glass_card_footer_margin">50dp</dimen>
+
+  <!-- The recommended margin for the left column of the two-column card. -->
+  <dimen name="glass_card_two_column_margin">30dp</dimen>
+
+  <!-- The recommended size for the menu text size. -->
+  <dimen name="menu_text_size">64sp</dimen>
+
+  <!-- The recommended menu text margin. -->
+  <dimen name="menu_text_margin">16dp</dimen>
+
+</resources>

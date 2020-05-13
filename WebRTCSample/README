@@ -1,0 +1,37 @@
+# Glass WebRTC Sample
+
+This project demonstrates a minimal Glass WebRTC application for realtime video conferencing.
+It's based on the [WebRTC Android](http://webrtc.github.io/webrtc-org/native-code/android/)
+with small changes to make the UI work on Glass. You can use this as a reference for your own WebRTC
+applications.
+
+## Running
+
+This sample does not require any additional setup. Open the project in Android Studio, connect your device,
+and press Play to launch the app!
+
+# WebRTC Android README
+
+This directory contains an example Android client for https://appr.tc
+
+Prerequisites:
+- "Getting the code", "Compiling", and "Using the Bundled Android SDK/NDK"
+  on http://www.webrtc.org/native-code/android
+
+Example of building & using the app:
+
+cd <path/to/webrtc>/src
+ninja -C out/Default AppRTCMobile
+adb install -r out/Default/apks/AppRTCMobile.apk
+
+In desktop chrome, navigate to https://appr.tc and note the r=<NNN> room
+this redirects to or navigate directly to https://appr.tc/r/<NNN> with
+your own room number. Launch AppRTC on the device and add same <NNN> into the room name list.
+
+You can also run application from a command line to connect to the first room in a list:
+adb shell am start -n org.appspot.apprtc/.ConnectActivity -a android.intent.action.VIEW
+This should result in the app launching on Android and connecting to the 3-dot-apprtc
+page displayed in the desktop browser.
+To run loopback test execute following command:
+adb shell am start -n org.appspot.apprtc/.ConnectActivity -a android.intent.action.VIEW --ez "org.appspot.apprtc.LOOPBACK" true
+
