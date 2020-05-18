@@ -1,0 +1,63 @@
+# Glass WebRTC Sample
+
+This project demonstrates a minimal Glass WebRTC application for realtime video conferencing.
+It's based on the [WebRTC Android](http://webrtc.github.io/webrtc-org/native-code/android/)
+with small changes to make the UI work on Glass. You can use this as a reference for your own WebRTC
+applications.
+
+## Running
+
+This sample does not require any additional setup. Open the project in Android Studio, connect your device,
+and press Play to launch the app!
+
+# WebRTC Android README
+
+This directory contains an example Android client for https://appr.tc
+
+Prerequisites:
+- "Getting the code", "Compiling", and "Using the Bundled Android SDK/NDK"
+  on http://www.webrtc.org/native-code/android
+
+Example of building & using the app:
+
+cd <path/to/webrtc>/src
+ninja -C out/Default AppRTCMobile
+adb install -r out/Default/apks/AppRTCMobile.apk
+
+In desktop chrome, navigate to https://appr.tc and note the r=<NNN> room
+this redirects to or navigate directly to https://appr.tc/r/<NNN> with
+your own room number. Launch AppRTC on the device and add same <NNN> into the room name list.
+
+You can also run application from a command line to connect to the first room in a list:
+adb shell am start -n org.appspot.apprtc/.ConnectActivity -a android.intent.action.VIEW
+This should result in the app launching on Android and connecting to the 3-dot-apprtc
+page displayed in the desktop browser.
+To run loopback test execute following command:
+adb shell am start -n org.appspot.apprtc/.ConnectActivity -a android.intent.action.VIEW --ez "org.appspot.apprtc.LOOPBACK" true
+
+## License
+
+Copyright (c) 2011, The WebRTC project authors. All rights reserved.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+  * Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  * Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the
+    distribution.
+  * Neither the name of Google nor the names of its contributors may
+    be used to endorse or promote products derived from this software
+    without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

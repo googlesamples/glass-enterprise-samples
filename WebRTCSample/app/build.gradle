@@ -1,0 +1,56 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    //buildToolsVersion '27.0.3'
+    defaultConfig {
+        applicationId "org.appspot.apprtcstandalone"
+        minSdkVersion 27
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    lintOptions {
+        abortOnError false
+    }
+    sourceSets {
+        main {
+            manifest.srcFile "AndroidManifest.xml"
+            java.srcDirs = ["src"]
+            res.srcDirs = ["res"]
+        }
+        androidTest {
+            manifest.srcFile "../androidtests/AndroidManifest.xml"
+            java.srcDirs = [
+                    "../androidtests/src"
+            ]
+            // This test doesn't work in Android Studio.
+            java.exclude('**/CallActivityStubbedInputOutputTest.java')
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'third_party/autobanh/lib', include: ['autobanh.jar'])
+    implementation 'com.example.glass.ui:gesture-lib-sample:0.1.0-SNAPSHOT'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'org.webrtc:google-webrtc:1.0.30039'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
