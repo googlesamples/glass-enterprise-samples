@@ -17,13 +17,32 @@
 package com.example.glass.notessample
 
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 
 class MainActivity : BaseActivity() {
 
+    companion object {
+        const val FEATURE_VOICE_COMMANDS = 14
+        val TAG = MainActivity::class.java.simpleName
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.requestFeature(FEATURE_VOICE_COMMANDS)
         setContentView(R.layout.activity_main)
 
         replaceFragment(NotesFragment(), false)
+    }
+
+    override fun onCreatePanelMenu(featureId: Int, menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.notes_menu, menu)
+        return true
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        Log.d(TAG, "Voice menu item selected: ${item.title}")
+        return super.onContextItemSelected(item)
     }
 }

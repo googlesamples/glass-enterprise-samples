@@ -16,4 +16,8 @@
 -->
 <resources>
     <string name="app_name">Notes Sample</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="add_note">Add note</string>
+    <string name="find">Find</string>
 </resources>

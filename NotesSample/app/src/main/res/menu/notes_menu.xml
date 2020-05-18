@@ -14,6 +14,21 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/delete"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/delete"/>
+    <item
+        android:id="@+id/edit"
+        android:icon="@drawable/ic_edit"
+        android:title="@string/edit"/>
+    <item
+        android:id="@+id/find"
+        android:icon="@drawable/ic_search"
+        android:title="@string/find"/>
+    <item
+        android:id="@+id/addNote"
+        android:icon="@drawable/ic_add"
+        android:title="@string/add_note"/>
+</menu>
