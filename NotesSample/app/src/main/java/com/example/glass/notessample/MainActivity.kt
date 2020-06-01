@@ -16,15 +16,20 @@
 
 package com.example.glass.notessample
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.app.ActivityCompat
 
 class MainActivity : BaseActivity() {
 
     companion object {
         const val FEATURE_VOICE_COMMANDS = 14
+        const val REQUEST_PERMISSION_CODE = 200
+        val PERMISSIONS = arrayOf(Manifest.permission.RECORD_AUDIO)
         val TAG = MainActivity::class.java.simpleName
     }
 
@@ -33,7 +38,30 @@ class MainActivity : BaseActivity() {
         window.requestFeature(FEATURE_VOICE_COMMANDS)
         setContentView(R.layout.activity_main)
 
+        // Requesting permissions to enable voice commands menu
+        ActivityCompat.requestPermissions(
+            this,
+            PERMISSIONS,
+            REQUEST_PERMISSION_CODE
+        )
+
         replaceFragment(NotesFragment(), false)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == REQUEST_PERMISSION_CODE) {
+            for (result in grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "Permission denied. Voice commands menu is disabled.")
+                }
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
     }
 
     override fun onCreatePanelMenu(featureId: Int, menu: Menu): Boolean {

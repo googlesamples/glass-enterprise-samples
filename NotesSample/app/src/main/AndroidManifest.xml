@@ -18,6 +18,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.glass.notessample">
 
+    <!-- Permission necessary to enable voice commands menu -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <application
         android:allowBackup="true"
         android:fullBackupContent="true"
