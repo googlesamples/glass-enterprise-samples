@@ -14,11 +14,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<resources>
-    <string name="app_name">Notes Sample</string>
-    <string name="font_thin">sans-serif-thin</string>
-    <string name="delete">Delete</string>
-    <string name="edit">Edit</string>
-    <string name="add_note">Add note</string>
-    <string name="find">Find</string>
-</resources>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/indicator_selected" android:state_selected="true" />
+    <item android:drawable="@drawable/indicator_not_selected" />
+</selector>

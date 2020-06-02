@@ -21,30 +21,40 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.glass.notessample.viewpager.BaseViewPagerFragment
+import com.example.glass.notessample.viewpager.NotesViewPagerViewHelper
 import com.example.glass.ui.GlassGestureDetector
 
+/**
+ * Main fragment for displaying notes
+ */
 class NotesFragment : Fragment(), GlassGestureDetector.OnGestureListener {
+
+    private lateinit var notesViewHelper: NotesViewPagerViewHelper
+    private val currentFragment: BaseViewPagerFragment by lazy {
+        notesViewHelper.viewPagerAdapter
+            .getCurrentFragment(notesViewHelper.getCurrentElementIndex()) as BaseViewPagerFragment
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.notes_fragment, container, false)
+        return inflater.inflate(R.layout.notes_view_pager, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        notesViewHelper = NotesViewPagerViewHelper(view, childFragmentManager)
+    }
+
+    override fun onGesture(glassGesture: GlassGestureDetector.Gesture): Boolean {
+        return currentFragment.onGesture(glassGesture)
     }
 
     override fun onResume() {
         super.onResume()
         (requireActivity() as BaseActivity).setOnGestureListener(this)
-    }
-
-    override fun onGesture(gesture: GlassGestureDetector.Gesture): Boolean {
-        return when (gesture) {
-            GlassGestureDetector.Gesture.SWIPE_DOWN -> {
-                requireActivity().finish()
-                true
-            }
-            else -> false
-        }
     }
 }

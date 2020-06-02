@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- Copyright 2020 Google LLC
+ Copyright 2019 Google LLC
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,10 +15,9 @@
  limitations under the License.
 -->
 <resources>
-    <string name="app_name">Notes Sample</string>
-    <string name="font_thin">sans-serif-thin</string>
-    <string name="delete">Delete</string>
-    <string name="edit">Edit</string>
-    <string name="add_note">Add note</string>
-    <string name="find">Find</string>
+  <dimen name="menu_text_size">45sp</dimen>
+  <dimen name="menu_text_margin">40dp</dimen>
+  <dimen name="option_icon_size">32dp</dimen>
+  <dimen name="tab_layout_height">2dp</dimen>
+  <dimen name="tab_indicator_height">0dp</dimen>
 </resources>

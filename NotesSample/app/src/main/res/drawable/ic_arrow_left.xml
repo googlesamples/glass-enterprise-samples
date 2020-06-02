@@ -14,11 +14,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<resources>
-    <string name="app_name">Notes Sample</string>
-    <string name="font_thin">sans-serif-thin</string>
-    <string name="delete">Delete</string>
-    <string name="edit">Edit</string>
-    <string name="add_note">Add note</string>
-    <string name="find">Find</string>
-</resources>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="32dp"
+    android:tint="#FFFFFF"
+    android:viewportWidth="24.0"
+    android:viewportHeight="24.0">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M15.41,16.09l-4.58,-4.59 4.58,-4.59L14,5.5l-6,6 6,6z" />
+</vector>

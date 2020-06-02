@@ -14,11 +14,20 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<resources>
-    <string name="app_name">Notes Sample</string>
-    <string name="font_thin">sans-serif-thin</string>
-    <string name="delete">Delete</string>
-    <string name="edit">Edit</string>
-    <string name="add_note">Add note</string>
-    <string name="find">Find</string>
-</resources>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:left="16dp"
+        android:right="16dp">
+        <shape>
+
+            <corners
+                android:bottomLeftRadius="5dp"
+                android:bottomRightRadius="5dp"
+                android:topLeftRadius="5dp"
+                android:topRightRadius="5dp" />
+            <size android:height="1dp" />
+            <solid android:color="#FFFFFF" />
+
+        </shape>
+    </item>
+</layer-list>
