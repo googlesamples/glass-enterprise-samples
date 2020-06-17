@@ -20,8 +20,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import androidx.core.app.ActivityCompat
 
 class MainActivity : BaseActivity() {
@@ -62,15 +60,5 @@ class MainActivity : BaseActivity() {
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
-    }
-
-    override fun onCreatePanelMenu(featureId: Int, menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.notes_menu, menu)
-        return true
-    }
-
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        Log.d(TAG, "Voice menu item selected: ${item.title}")
-        return super.onContextItemSelected(item)
     }
 }

@@ -20,6 +20,7 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.example.glass.notessample.NotesViewHelper
+import com.example.glass.notessample.model.Note
 import kotlinx.android.synthetic.main.notes_view_pager.view.*
 
 /**
@@ -27,8 +28,7 @@ import kotlinx.android.synthetic.main.notes_view_pager.view.*
  */
 class NotesViewPagerViewHelper(
     view: View,
-    fragmentManager: FragmentManager,
-    voiceListener: (String) -> Unit = {}
+    fragmentManager: FragmentManager
 ) : NotesViewHelper {
 
     companion object {
@@ -36,11 +36,13 @@ class NotesViewPagerViewHelper(
     }
 
     val viewPagerAdapter: NotesPagerAdapter
-    private val fragmentList = mutableListOf<BaseViewPagerFragment>()
+    private val addNoteFragment = AddNoteFragment()
+    private val optionsList = listOf(addNoteFragment)
+    private var fragmentList = mutableListOf<BaseViewPagerFragment>()
     private val viewPager = view.notesViewPager
 
     init {
-        fragmentList.add(AddNoteFragment.newInstance(voiceListener))
+        fragmentList.addAll(optionsList)
         viewPagerAdapter = NotesPagerAdapter(
             fragmentList,
             fragmentManager,
@@ -53,12 +55,22 @@ class NotesViewPagerViewHelper(
         tabLayout.setupWithViewPager(viewPager)
     }
 
-    override fun getCurrentElementIndex(): Int {
-        return viewPager.currentItem
-    }
+    override fun getCurrentElementIndex(): Int = viewPager.currentItem
+
 
     override fun notifyDataSetChanged(position: Int) {
         fragmentList.removeAt(position)
+        viewPagerAdapter.notifyDataSetChanged()
+    }
+
+    fun optionsNumber() = optionsList.size
+
+    fun updateFragmentList(list: List<Note>) {
+        fragmentList.clear()
+        fragmentList.addAll(optionsList)
+        list.forEach {
+            fragmentList.add(NoteFragment.newInstance(it.content, it.daytime))
+        }
         viewPagerAdapter.notifyDataSetChanged()
     }
 }

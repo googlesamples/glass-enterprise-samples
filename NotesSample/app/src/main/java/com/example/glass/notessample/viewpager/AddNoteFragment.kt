@@ -16,11 +16,7 @@
 
 package com.example.glass.notessample.viewpager
 
-import android.app.Activity.RESULT_OK
-import android.content.Intent
 import android.os.Bundle
-import android.speech.RecognizerIntent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,21 +29,6 @@ import kotlinx.android.synthetic.main.notes_option_layout.*
  */
 class AddNoteFragment : BaseViewPagerFragment() {
 
-    companion object {
-        private val TAG = AddNoteFragment::class.java.simpleName
-        private const val VOICE_REQUEST_CODE = 205
-
-        fun newInstance(
-            listener: (text: String) -> Unit
-        ): AddNoteFragment {
-            val addNoteFragment = AddNoteFragment()
-            addNoteFragment.listener = listener
-            return addNoteFragment
-        }
-    }
-
-    lateinit var listener: (String) -> Unit
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -57,6 +38,7 @@ class AddNoteFragment : BaseViewPagerFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         optionIcon.setImageResource(R.drawable.ic_add)
         optionTextView.text = resources.getString(R.string.add_note)
     }
@@ -69,28 +51,4 @@ class AddNoteFragment : BaseViewPagerFragment() {
             }
             else -> super.onGesture(gesture)
         }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == VOICE_REQUEST_CODE && resultCode == RESULT_OK) {
-            val results: List<String>? =
-                data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-            if (results != null && results.isNotEmpty() && results[0].isNotEmpty()) {
-                listener(results[0])
-            } else {
-                Log.d(TAG, "Voice recognition result is empty")
-            }
-        } else {
-            Log.d(TAG, "Voice recognition activity results with bad request or result code")
-        }
-    }
-
-    private fun startVoiceRecognition() {
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        intent.putExtra(
-            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-        )
-        startActivityForResult(intent, VOICE_REQUEST_CODE)
-    }
 }

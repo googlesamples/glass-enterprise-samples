@@ -16,18 +16,38 @@
 
 package com.example.glass.notessample.viewpager
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.speech.RecognizerIntent
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.glass.notessample.R
+import com.example.glass.notessample.model.Note
+import com.example.glass.notessample.model.NoteViewModel
+import com.example.glass.notessample.voicecommand.OnVoiceCommandListener
 import com.example.glass.ui.GlassGestureDetector
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Base class for the view pager fragments
  */
-open class BaseViewPagerFragment : Fragment(), GlassGestureDetector.OnGestureListener {
+open class BaseViewPagerFragment : Fragment(), GlassGestureDetector.OnGestureListener,
+    OnVoiceCommandListener {
+
+    companion object {
+        private val TAG = AddNoteFragment::class.java.simpleName
+        const val VOICE_REQUEST_CODE = 205
+    }
+
+    private lateinit var noteViewModel: NoteViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +55,11 @@ open class BaseViewPagerFragment : Fragment(), GlassGestureDetector.OnGestureLis
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.notes_fragment_layout, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        noteViewModel = ViewModelProvider(this).get(NoteViewModel::class.java)
     }
 
     override fun onGesture(gesture: GlassGestureDetector.Gesture): Boolean =
@@ -45,4 +70,37 @@ open class BaseViewPagerFragment : Fragment(), GlassGestureDetector.OnGestureLis
             }
             else -> false
         }
+
+    override fun onVoiceCommandDetected(menuItem: MenuItem) {
+        when (menuItem.itemId) {
+            R.id.addNote -> startVoiceRecognition()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == VOICE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val results: List<String>? =
+                data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            if (results != null && results.isNotEmpty() && results[0].isNotEmpty()) {
+                noteViewModel.insert(Note(results[0], results[0], getDateTime()))
+            } else {
+                Log.d(TAG, "Voice recognition result is empty")
+            }
+        } else {
+            Log.d(TAG, "Voice recognition activity results with bad request or result code")
+        }
+    }
+
+    fun startVoiceRecognition() {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        intent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+        )
+        startActivityForResult(intent, VOICE_REQUEST_CODE)
+    }
+
+    private fun getDateTime() =
+        SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(Date())
 }

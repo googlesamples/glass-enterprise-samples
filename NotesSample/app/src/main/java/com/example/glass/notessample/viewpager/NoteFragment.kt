@@ -1,0 +1,48 @@
+/*
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.example.glass.notessample.viewpager
+
+import android.os.Bundle
+import android.view.View
+import kotlinx.android.synthetic.main.notes_fragment_layout.*
+
+class NoteFragment : BaseViewPagerFragment() {
+
+    companion object {
+
+        private const val TEXT_KEY = "TEXT_KEY"
+        private const val DATETIME_KEY = "DATETIME_KEY"
+
+        fun newInstance(
+            text: String,
+            datetime: String
+        ): NoteFragment {
+            val noteFragment = NoteFragment()
+            val bundle = Bundle()
+            bundle.putString(TEXT_KEY, text)
+            bundle.putString(DATETIME_KEY, datetime)
+            noteFragment.arguments = bundle
+            return noteFragment
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        noteContent.text = arguments?.getString(TEXT_KEY)
+        datetimeTextView.text = arguments?.getString(DATETIME_KEY)
+    }
+}

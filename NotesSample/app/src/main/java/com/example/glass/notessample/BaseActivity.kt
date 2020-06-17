@@ -17,20 +17,21 @@
 package com.example.glass.notessample
 
 import android.os.Bundle
-import android.util.Log
-import android.view.MenuItem
-import android.view.MotionEvent
-import android.view.View
-import android.view.Window
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import androidx.fragment.app.transaction
+import com.example.glass.notessample.voicecommand.OnVoiceCommandListener
 import com.example.glass.ui.GlassGestureDetector
 import com.example.glass.ui.GlassGestureDetector.OnGestureListener
 
 abstract class BaseActivity : AppCompatActivity(), OnGestureListener {
 
+    var onGestureListener: OnGestureListener? = null
+        set(value) {
+            glassGestureDetector = GlassGestureDetector(this, value)
+        }
+    var onVoiceCommandListener: OnVoiceCommandListener? = null
     private lateinit var glassGestureDetector: GlassGestureDetector
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,15 +44,18 @@ abstract class BaseActivity : AppCompatActivity(), OnGestureListener {
         window.hideSystemUI()
     }
 
-    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        return glassGestureDetector.onTouchEvent(ev) || super.dispatchTouchEvent(ev)
+    override fun onCreatePanelMenu(featureId: Int, menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.notes_menu, menu)
+        return true
     }
 
-    /**
-     * Sets new [OnGestureListener] on the [GlassGestureDetector] object.
-     */
-    fun setOnGestureListener(onGestureListener: OnGestureListener) {
-        glassGestureDetector = GlassGestureDetector(this, onGestureListener)
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        onVoiceCommandListener?.onVoiceCommandDetected(item)
+        return super.onContextItemSelected(item)
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        return glassGestureDetector.onTouchEvent(ev) || super.dispatchTouchEvent(ev)
     }
 
     override fun onGesture(gesture: GlassGestureDetector.Gesture): Boolean = false

@@ -46,6 +46,14 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         repository.insert(note)
     }
 
+    fun deleteElementAtPosition(position: Int) = viewModelScope.launch(Dispatchers.IO) {
+        val note = allNotes.value?.get(position)
+        if (note != null) {
+            repository.delete(note)
+        }
+    }
+
+
     fun delete(note: Note) = viewModelScope.launch(Dispatchers.IO) {
         repository.delete(note)
     }
