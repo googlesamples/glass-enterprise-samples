@@ -69,6 +69,8 @@ class NotesFragment : Fragment(), GlassGestureDetector.OnGestureListener, OnVoic
                 noteViewModel.deleteElementAtPosition(
                     notesViewHelper.getCurrentElementIndex() - notesViewHelper.optionsNumber())
             }
+            R.id.next -> notesViewHelper.scrollToNextElement()
+            R.id.previous -> notesViewHelper.scrollToPreviousElement()
             else -> getCurrentFragment().onVoiceCommandDetected(menuItem)
         }
     }

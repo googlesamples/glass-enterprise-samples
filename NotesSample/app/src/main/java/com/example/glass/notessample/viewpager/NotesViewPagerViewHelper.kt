@@ -63,6 +63,18 @@ class NotesViewPagerViewHelper(
         viewPagerAdapter.notifyDataSetChanged()
     }
 
+    fun scrollToNextElement() {
+        if (getCurrentElementIndex() != fragmentList.size - 1) {
+            viewPager.setCurrentItem(getCurrentElementIndex() + 1, true)
+        }
+    }
+
+    fun scrollToPreviousElement() {
+        if (getCurrentElementIndex() != 0) {
+            viewPager.setCurrentItem(getCurrentElementIndex() - 1, true)
+        }
+    }
+
     fun optionsNumber() = optionsList.size
 
     fun updateFragmentList(list: List<Note>) {

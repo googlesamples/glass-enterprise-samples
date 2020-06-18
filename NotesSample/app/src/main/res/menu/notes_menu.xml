@@ -31,4 +31,12 @@
         android:id="@+id/addNote"
         android:icon="@drawable/ic_add"
         android:title="@string/add_note"/>
+    <item
+        android:id="@+id/next"
+        android:icon="@drawable/ic_arrow_right"
+        android:title="@string/next"/>
+    <item
+        android:id="@+id/previous"
+        android:icon="@drawable/ic_arrow_left"
+        android:title="@string/previous"/>
 </menu>
