@@ -46,7 +46,7 @@ class AddNoteFragment : BaseViewPagerFragment() {
     override fun onGesture(gesture: GlassGestureDetector.Gesture): Boolean =
         when (gesture) {
             GlassGestureDetector.Gesture.TAP -> {
-                startVoiceRecognition()
+                startVoiceRecognition(ADD_NOTE_REQUEST_CODE)
                 true
             }
             else -> super.onGesture(gesture)

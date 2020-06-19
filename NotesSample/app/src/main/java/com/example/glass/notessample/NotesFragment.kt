@@ -62,6 +62,16 @@ class NotesFragment : Fragment(), GlassGestureDetector.OnGestureListener, OnVoic
 
     override fun onVoiceCommandDetected(menuItem: MenuItem) {
         when (menuItem.itemId) {
+            R.id.edit -> {
+                if (notesViewHelper.getCurrentElementIndex() < notesViewHelper.optionsNumber()) {
+                    return
+                }
+                val noteId = noteViewModel.allNotes.value?.get(
+                    notesViewHelper.getCurrentElementIndex() - notesViewHelper.optionsNumber())?.id
+                if (noteId != null) {
+                    getCurrentFragment().editNoteWithId(noteId)
+                }
+            }
             R.id.delete -> {
                 if (notesViewHelper.getCurrentElementIndex() < notesViewHelper.optionsNumber()) {
                     return

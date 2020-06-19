@@ -44,10 +44,12 @@ open class BaseViewPagerFragment : Fragment(), GlassGestureDetector.OnGestureLis
 
     companion object {
         private val TAG = AddNoteFragment::class.java.simpleName
-        const val VOICE_REQUEST_CODE = 205
+        const val ADD_NOTE_REQUEST_CODE = 205
+        const val EDIT_NOTE_REQUEST_CODE = 210
     }
 
     private lateinit var noteViewModel: NoteViewModel
+    private var noteToEditId: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,17 +75,26 @@ open class BaseViewPagerFragment : Fragment(), GlassGestureDetector.OnGestureLis
 
     override fun onVoiceCommandDetected(menuItem: MenuItem) {
         when (menuItem.itemId) {
-            R.id.addNote -> startVoiceRecognition()
+            R.id.addNote -> startVoiceRecognition(ADD_NOTE_REQUEST_CODE)
+            R.id.edit -> startVoiceRecognition(EDIT_NOTE_REQUEST_CODE)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == VOICE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
             val results: List<String>? =
                 data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
             if (results != null && results.isNotEmpty() && results[0].isNotEmpty()) {
-                noteViewModel.insert(Note(results[0], results[0], getDateTime()))
+                if (requestCode == ADD_NOTE_REQUEST_CODE) {
+                    noteViewModel.insert(Note(results[0], results[0], getDateTime()))
+                } else if (requestCode == EDIT_NOTE_REQUEST_CODE) {
+                    if (noteToEditId != null) {
+                        val editedNote = Note(results[0], results[0], getDateTime())
+                        editedNote.id = noteToEditId!!
+                        noteViewModel.update(editedNote)
+                    }
+                }
             } else {
                 Log.d(TAG, "Voice recognition result is empty")
             }
@@ -92,13 +103,18 @@ open class BaseViewPagerFragment : Fragment(), GlassGestureDetector.OnGestureLis
         }
     }
 
-    fun startVoiceRecognition() {
+    fun startVoiceRecognition(requestCode: Int) {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(
             RecognizerIntent.EXTRA_LANGUAGE_MODEL,
             RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
         )
-        startActivityForResult(intent, VOICE_REQUEST_CODE)
+        startActivityForResult(intent, requestCode)
+    }
+
+    fun editNoteWithId(id: Int) {
+        noteToEditId = id
+        startVoiceRecognition(EDIT_NOTE_REQUEST_CODE)
     }
 
     private fun getDateTime() =
