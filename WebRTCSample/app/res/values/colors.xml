@@ -17,5 +17,5 @@
 
 <resources>
   <color name="semi_transparent">#96000000</color>
-  <color name="ic_launcher_background">#43A047</color>
+  <color name="ic_launcher_background">#E53935</color>
 </resources>
