@@ -138,7 +138,10 @@ public class CameraActionHandler implements OnImageAvailableListener {
 
   /**
    * Flag indicating the camera app has been opened in video mode via intent.
-   * It helps to prevent the unintended camera mode change.
+   * When camera is opened using camera button long press action, button is still pressed
+   * and needs to be released when camera app is in the foreground. It unintentionally triggers
+   * the {@link android.app.Activity#onKeyUp} callback and changes the camera mode.
+   * This flag helps to prevent this unintended camera mode change.
    */
   private boolean isCameraOpenedInVideoModeViaIntent = false;
 
