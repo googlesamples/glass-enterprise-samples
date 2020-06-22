@@ -137,6 +137,12 @@ public class CameraActionHandler implements OnImageAvailableListener {
   private boolean isVideoCaptureSessionPreparing = false;
 
   /**
+   * Flag indicating the camera app has been opened in video mode via intent.
+   * It helps to prevent the unintended camera mode change.
+   */
+  private boolean isCameraOpenedInVideoModeViaIntent = false;
+
+  /**
    * {@link CameraDevice.StateCallback} is called when {@link CameraDevice} changes its state.
    */
   private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
@@ -300,6 +306,10 @@ public class CameraActionHandler implements OnImageAvailableListener {
    * </ol>
    */
   public void performCameraButtonPress() {
+    if (isCameraOpenedInVideoModeViaIntent) {
+      isCameraOpenedInVideoModeViaIntent = false;
+      return;
+    }
     switch (cameraMode) {
       case PICTURE:
         takePicture();
@@ -372,6 +382,7 @@ public class CameraActionHandler implements OnImageAvailableListener {
         case MediaStore.INTENT_ACTION_VIDEO_CAMERA:
         case MediaStore.ACTION_VIDEO_CAPTURE:
           switchCameraMode(CameraMode.VIDEO);
+          isCameraOpenedInVideoModeViaIntent = true;
           break;
       }
     }
