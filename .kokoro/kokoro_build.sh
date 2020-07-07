@@ -16,3 +16,5 @@ cd ${KOKORO_ARTIFACTS_DIR}/github/glass-enterprise-samples
 ( cd QRCodeScannerSample    && ./gradlew build )
 ( cd VoiceRecognitionSample && ./gradlew build )
 ( cd WebRTCSample           && ./gradlew build )
+( cd NotesSample           && ./gradlew build )
+
