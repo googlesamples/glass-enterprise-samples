@@ -16,9 +16,12 @@ Then use [Android Studio](https://developer.android.com/studio) to build & run t
 
 *  [Card Sample](CardSample): A simple Glass application showcasing typical layouts and UI patterns.
 *  [Camera2 Sample](Camera2Sample): Take photos and videos using the [Camera2 API](https://developer.android.com/guide/topics/media/camera).
-*  [Gallery Sample](GallerySample): Brows and delete photos and videos.
+*  [Gallery Sample](GallerySample): Browse and delete photos and videos.
+*  [Gesture Detector](GestureLibrarySample): Respond to gesture events on the touchpad.
+*  [Notes Sample](NotesSample): Use voice commands & voice recognition to record notes on Glass.
 *  [QR Code Sample](QRCodeScannerSample): Scan QR codes with the camera.
-*  [Gesture Detector](endpoints-frameworks): Respond to gesture events on the touchpad.
+*  [Voice Recognition Sample](VoiceRecognitionSample): Embed voice transcription in your apps. 
+*  [WebRTC Sample](WebRTCSample): A video conferencing app based on the open source WebRTC [Android example](http://webrtc.github.io/webrtc-org/native-code/android/).
 
 ## Contributing
 
