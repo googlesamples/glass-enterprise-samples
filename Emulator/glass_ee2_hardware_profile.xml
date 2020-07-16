@@ -1,76 +1,97 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<d:devices xmlns:d="http://schemas.android.com/sdk/devices/5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <d:device>
-    <d:name>Glass Enterprise Edition 2</d:name>
-    <d:manufacturer>Google</d:manufacturer>
-    <d:meta/>
-    <d:hardware>
-      <d:screen>
-        <d:screen-size>large</d:screen-size>
-        <d:diagonal-length>5.00</d:diagonal-length>
-        <d:pixel-density>mdpi</d:pixel-density>
-        <d:screen-ratio>long</d:screen-ratio>
-        <d:dimensions>
-          <d:x-dimension>640</d:x-dimension>
-          <d:y-dimension>360</d:y-dimension>
-        </d:dimensions>
-        <d:xdpi>146.86</d:xdpi>
-        <d:ydpi>146.86</d:ydpi>
-        <d:touch>
-          <d:multitouch>jazz-hands</d:multitouch>
-          <d:mechanism>finger</d:mechanism>
-          <d:screen-type>capacitive</d:screen-type>
-        </d:touch>
-      </d:screen>
-      <d:networking>
-Bluetooth
-Wifi</d:networking>
-      <d:sensors>
-Accelerometer
-Barometer
-Compass
-Gyroscope
-LightSensor</d:sensors>
-      <d:mic>true</d:mic>
-      <d:camera>
-        <d:location>back</d:location>
-        <d:autofocus>false</d:autofocus>
-        <d:flash>false</d:flash>
-      </d:camera>
-      <d:keyboard>nokeys</d:keyboard>
-      <d:nav>nonav</d:nav>
-      <d:ram unit="GiB">3</d:ram>
-      <d:buttons>hard</d:buttons>
-      <d:internal-storage unit="GiB">
-4</d:internal-storage>
-      <d:removable-storage unit="TiB"/>
-      <d:cpu>Generic CPU</d:cpu>
-      <d:gpu>Generic GPU</d:gpu>
-      <d:abi>
-armeabi
-armeabi-v7a
-arm64-v8a
-x86
-x86_64
-mips
-mips64</d:abi>
-      <d:dock/>
-      <d:power-type>battery</d:power-type>
-      <d:skin>_no_skin</d:skin>
-    </d:hardware>
-    <d:software>
-      <d:api-level>-</d:api-level>
-      <d:live-wallpaper-support>true</d:live-wallpaper-support>
-      <d:bluetooth-profiles/>
-      <d:gl-version>2.0</d:gl-version>
-      <d:gl-extensions/>
-      <d:status-bar>false</d:status-bar>
-    </d:software>
-    <d:state default="true" name="Landscape">
-      <d:description>The device in landscape orientation</d:description>
-      <d:screen-orientation>land</d:screen-orientation>
-      <d:keyboard-state>keyssoft</d:keyboard-state>
-      <d:nav-state>navhidden</d:nav-state>
-    </d:state>
-  </d:device>
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright 2020 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<d:devices xmlns:d="http://schemas.android.com/sdk/devices/5"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <d:device>
+        <d:name>Glass Enterprise Edition 2</d:name>
+        <d:manufacturer>Google</d:manufacturer>
+        <d:meta />
+        <d:hardware>
+            <d:screen>
+                <d:screen-size>large</d:screen-size>
+                <d:diagonal-length>5.00</d:diagonal-length>
+                <d:pixel-density>mdpi</d:pixel-density>
+                <d:screen-ratio>long</d:screen-ratio>
+                <d:dimensions>
+                    <d:x-dimension>640</d:x-dimension>
+                    <d:y-dimension>360</d:y-dimension>
+                </d:dimensions>
+                <d:xdpi>146.86</d:xdpi>
+                <d:ydpi>146.86</d:ydpi>
+                <d:touch>
+                    <d:multitouch>jazz-hands</d:multitouch>
+                    <d:mechanism>finger</d:mechanism>
+                    <d:screen-type>capacitive</d:screen-type>
+                </d:touch>
+            </d:screen>
+            <d:networking>
+                Bluetooth
+                Wifi
+            </d:networking>
+            <d:sensors>
+                Accelerometer
+                Compass
+                Gyroscope
+                LightSensor
+            </d:sensors>
+            <d:mic>true</d:mic>
+            <d:camera>
+                <d:location>back</d:location>
+                <d:autofocus>false</d:autofocus>
+                <d:flash>false</d:flash>
+            </d:camera>
+            <d:keyboard>nokeys</d:keyboard>
+            <d:nav>nonav</d:nav>
+            <d:ram unit="GiB">3</d:ram>
+            <d:buttons>hard</d:buttons>
+            <d:internal-storage unit="GiB">
+                4
+            </d:internal-storage>
+            <d:removable-storage unit="TiB" />
+            <d:cpu>Generic CPU</d:cpu>
+            <d:gpu>Generic GPU</d:gpu>
+            <d:abi>
+                armeabi
+                armeabi-v7a
+                arm64-v8a
+                x86
+                x86_64
+                mips
+                mips64
+            </d:abi>
+            <d:dock />
+            <d:power-type>battery</d:power-type>
+            <d:skin>_no_skin</d:skin>
+        </d:hardware>
+        <d:software>
+            <d:api-level>-</d:api-level>
+            <d:live-wallpaper-support>true</d:live-wallpaper-support>
+            <d:bluetooth-profiles />
+            <d:gl-version>2.0</d:gl-version>
+            <d:gl-extensions />
+            <d:status-bar>false</d:status-bar>
+        </d:software>
+        <d:state
+            name="Landscape"
+            default="true">
+            <d:description>The device in landscape orientation</d:description>
+            <d:screen-orientation>land</d:screen-orientation>
+            <d:keyboard-state>keyssoft</d:keyboard-state>
+            <d:nav-state>navhidden</d:nav-state>
+        </d:state>
+    </d:device>
 </d:devices>
