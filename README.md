@@ -24,8 +24,8 @@ Then use [Android Studio](https://developer.android.com/studio) to build & run t
 *  [Voice Recognition Sample](VoiceRecognitionSample): Embed voice transcription in your apps. 
 *  [WebRTC Sample](WebRTCSample): A video conferencing app based on the open source WebRTC [Android example](http://webrtc.github.io/webrtc-org/native-code/android/).
 
-
-[Hardware profile](HardwareProfile): [Import](https://developer.android.com/studio/run/managing-avds#importexporthp) this example hardware profile into Android Virtual Device Manager to make your emulator more like the display on Glass.
+## Hardware profile
+[Import](https://developer.android.com/studio/run/managing-avds#importexporthp) this example [hardware profile](HardwareProfile) into Android Virtual Device Manager to make your emulator more like the display on Glass.
 
 ## Contributing
 
