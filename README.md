@@ -20,8 +20,12 @@ Then use [Android Studio](https://developer.android.com/studio) to build & run t
 *  [Gesture Detector](GestureLibrarySample): Respond to gesture events on the touchpad.
 *  [Notes Sample](NotesSample): Use voice commands & voice recognition to record notes on Glass.
 *  [QR Code Sample](QRCodeScannerSample): Scan QR codes with the camera.
+*  [Gesture Detector](endpoints-frameworks): Respond to gesture events on the touchpad.
 *  [Voice Recognition Sample](VoiceRecognitionSample): Embed voice transcription in your apps. 
 *  [WebRTC Sample](WebRTCSample): A video conferencing app based on the open source WebRTC [Android example](http://webrtc.github.io/webrtc-org/native-code/android/).
+
+## Hardware profile
+[Import](https://developer.android.com/studio/run/managing-avds#importexporthp) this example [hardware profile](HardwareProfile/glass_ee2_hardware_profile.xml) into Android Virtual Device Manager to make your emulator more like the display on Glass.
 
 ## Contributing
 
