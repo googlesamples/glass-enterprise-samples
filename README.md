@@ -25,7 +25,7 @@ Then use [Android Studio](https://developer.android.com/studio) to build & run t
 *  [WebRTC Sample](WebRTCSample): A video conferencing app based on the open source WebRTC [Android example](http://webrtc.github.io/webrtc-org/native-code/android/).
 
 ## Hardware profile
-[Import](https://developer.android.com/studio/run/managing-avds#importexporthp) this example [hardware profile](HardwareProfile) into Android Virtual Device Manager to make your emulator more like the display on Glass.
+[Import](https://developer.android.com/studio/run/managing-avds#importexporthp) this example [hardware profile](HardwareProfile/glass_ee2_hardware_profile.xml) into Android Virtual Device Manager to make your emulator more like the display on Glass.
 
 ## Contributing
 
