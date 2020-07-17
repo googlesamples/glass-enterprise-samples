@@ -19,6 +19,7 @@ Then use [Android Studio](https://developer.android.com/studio) to build & run t
 *  [Gallery Sample](GallerySample): Brows and delete photos and videos.
 *  [QR Code Sample](QRCodeScannerSample): Scan QR codes with the camera.
 *  [Gesture Detector](endpoints-frameworks): Respond to gesture events on the touchpad.
+*  [Emulator](Emulator): Glass hardware profile to [import](https://developer.android.com/studio/run/managing-avds#importexporthp) in Android Studio.
 
 ## Contributing
 
