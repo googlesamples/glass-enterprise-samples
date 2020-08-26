@@ -229,5 +229,5 @@
     <string name="menu_font">sans-serif-thin</string>
     <string name="navigate_to">Navigate to</string>
     <string name="https_appr_tc">https://appr.tc/</string>
-    <string name="and_enter_room_name">and enter room name</string>
+    <string name="enter_room_name">on your computer and enter room name</string>
 </resources>
