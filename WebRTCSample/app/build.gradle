@@ -44,6 +44,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation fileTree(dir: 'third_party/autobanh/lib', include: ['autobanh.jar'])
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation 'com.example.glass.ui:gesture-lib-sample:0.1.0-SNAPSHOT'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'org.webrtc:google-webrtc:1.0.30039'
