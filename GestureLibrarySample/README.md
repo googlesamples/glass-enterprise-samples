@@ -39,7 +39,7 @@ public class MainActivity extends Activity implements OnGestureListener {
 
   @Override
   public boolean dispatchTouchEvent(MotionEvent ev) {
-    return glassGestureDetector.onTouchEvent(event) || super.dispatchTouchEvent(event);
+    return glassGestureDetector.onTouchEvent(ev) || super.dispatchTouchEvent(ev);
   }
 
   @Override
