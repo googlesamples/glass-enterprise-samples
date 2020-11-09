@@ -44,11 +44,11 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation fileTree(dir: 'third_party/autobanh/lib', include: ['autobanh.jar'])
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.example.glass.ui:gesture-lib-sample:0.1.0-SNAPSHOT'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'org.webrtc:google-webrtc:1.0.30039'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.2.1'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
