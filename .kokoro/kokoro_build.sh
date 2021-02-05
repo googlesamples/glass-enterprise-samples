@@ -17,4 +17,5 @@ cd ${KOKORO_ARTIFACTS_DIR}/github/glass-enterprise-samples
 ( cd VoiceRecognitionSample && ./gradlew build )
 ( cd WebRTCSample           && ./gradlew build )
 ( cd NotesSample           && ./gradlew build )
+( cd VoiceCommandsReloadingSample && ./gradlew build )
 
