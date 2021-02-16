@@ -17,6 +17,7 @@
 package com.example.glass.ui;
 
 import android.content.Context;
+import android.os.CountDownTimer;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -28,6 +29,7 @@ import android.view.ViewConfiguration;
  * It detects one and two finger gestures like:
  * <ul>
  *   <li>TAP</li>
+ *   <li>TAP_AND_HOLD</li>
  *   <li>TWO_FINGER_TAP</li>
  *   <li>SWIPE_FORWARD</li>
  *   <li>TWO_FINGER_SWIPE_FORWARD</li>
@@ -73,6 +75,7 @@ public class GlassGestureDetector {
    */
   public enum Gesture {
     TAP,
+    TAP_AND_HOLD,
     TWO_FINGER_TAP,
     SWIPE_FORWARD,
     TWO_FINGER_SWIPE_FORWARD,
@@ -123,11 +126,23 @@ public class GlassGestureDetector {
   private static final int VELOCITY_UNIT = 1000;
   private static final int FIRST_FINGER_POINTER_INDEX = 0;
   private static final int SECOND_FINGER_POINTER_INDEX = 1;
+  private static final int TAP_AND_HOLD_THRESHOLD_MS = ViewConfiguration.getLongPressTimeout();
   private static final double TAN_ANGLE_DEGREES = Math.tan(Math.toRadians(60));
   static final int SWIPE_DISTANCE_THRESHOLD_PX = 100;
   static final int SWIPE_VELOCITY_THRESHOLD_PX = 100;
 
   private final int touchSlopSquare;
+  final CountDownTimer tapAndHoldCountDownTimer = new CountDownTimer(TAP_AND_HOLD_THRESHOLD_MS,
+      TAP_AND_HOLD_THRESHOLD_MS) {
+    @Override
+    public void onTick(long millisUntilFinished) {}
+
+    @Override
+    public void onFinish() {
+      isTapAndHoldPerformed = true;
+      onGestureListener.onGesture(Gesture.TAP_AND_HOLD);
+    }
+  };
   /**
    * This flag is set to true each time the {@link MotionEvent#ACTION_DOWN} action appears
    * and it remains true until the finger moves out of the tap region.
@@ -143,6 +158,7 @@ public class GlassGestureDetector {
   private boolean isInTapRegion;
   private boolean isTwoFingerGesture = false;
   private boolean isActionDownPerformed = false;
+  private boolean isTapAndHoldPerformed = false;
   private float firstFingerDownX;
   private float firstFingerDownY;
   private float firstFingerLastFocusX;
@@ -187,6 +203,7 @@ public class GlassGestureDetector {
 
     switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
       case MotionEvent.ACTION_DOWN:
+        tapAndHoldCountDownTimer.start();
         firstFingerDownX = firstFingerLastFocusX = motionEvent.getX();
         firstFingerDownY = firstFingerLastFocusY = motionEvent.getY();
         isActionDownPerformed = true;
@@ -197,6 +214,7 @@ public class GlassGestureDetector {
         currentDownEvent = MotionEvent.obtain(motionEvent);
         break;
       case MotionEvent.ACTION_POINTER_DOWN:
+        tapAndHoldCountDownTimer.cancel();
         isTwoFingerGesture = true;
         secondFingerDownX = motionEvent.getX(motionEvent.getActionIndex());
         secondFingerDownY = motionEvent.getY(motionEvent.getActionIndex());
@@ -223,6 +241,7 @@ public class GlassGestureDetector {
                 + (secondFingerDistanceY * secondFingerDistanceY);
           }
           if (distance > touchSlopSquare || distanceSecondFinger > touchSlopSquare) {
+            tapAndHoldCountDownTimer.cancel();
             isInTapRegion = false;
           }
         }
@@ -234,6 +253,7 @@ public class GlassGestureDetector {
         }
         break;
       case MotionEvent.ACTION_UP:
+        tapAndHoldCountDownTimer.cancel();
         velocityTracker.computeCurrentVelocity(VELOCITY_UNIT);
         firstFingerVelocityX = velocityTracker
             .getXVelocity(motionEvent.getPointerId(motionEvent.getActionIndex()));
@@ -243,9 +263,11 @@ public class GlassGestureDetector {
         onTouchEnded();
         break;
       case MotionEvent.ACTION_CANCEL:
+        tapAndHoldCountDownTimer.cancel();
         velocityTracker.recycle();
         velocityTracker = null;
         isInTapRegion = false;
+        isTapAndHoldPerformed = false;
         break;
     }
     return handled;
@@ -253,6 +275,9 @@ public class GlassGestureDetector {
 
   private boolean detectGesture() {
     if (!isActionDownPerformed) {
+      return false;
+    }
+    if (isTapAndHoldPerformed) {
       return false;
     }
     final double tan =
@@ -330,6 +355,7 @@ public class GlassGestureDetector {
       velocityTracker = null;
     }
     isActionDownPerformed = false;
+    isTapAndHoldPerformed = false;
     onGestureListener.onTouchEnded();
   }
 }

@@ -465,6 +465,29 @@ public class GlassGestureDetectorTest {
     assertEquals(Gesture.TWO_FINGER_SWIPE_DOWN, detectedGesture);
   }
 
+  @Test
+  public void testTapAndHold() {
+    assertNull(detectedGesture);
+    assertFalse(glassGestureDetector.onTouchEvent(getActionDown()));
+    assertNull(detectedGesture);
+    glassGestureDetector.tapAndHoldCountDownTimer.onFinish();
+    assertEquals(Gesture.TAP_AND_HOLD, detectedGesture);
+  }
+
+  @Test
+  public void testDetectTapAndHoldOnly() {
+    assertNull(detectedGesture);
+    assertFalse(glassGestureDetector.onTouchEvent(getActionDown()));
+    assertNull(detectedGesture);
+    assertFalse(glassGestureDetector.onTouchEvent(getActionMove(INITIAL_X, INITIAL_Y)));
+    glassGestureDetector.tapAndHoldCountDownTimer.onFinish();
+    assertEquals(Gesture.TAP_AND_HOLD, detectedGesture);
+
+    detectedGesture = null;
+    assertFalse(glassGestureDetector.onTouchEvent(getActionUp(INITIAL_X, INITIAL_Y)));
+    assertNull(detectedGesture);
+  }
+
   private MotionEvent getMotionEventForGesture(Gesture gesture) {
     int X_CHANGE = 0;
     int Y_CHANGE = 0;
