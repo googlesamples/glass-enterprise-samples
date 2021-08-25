@@ -39,7 +39,9 @@
         android:name="com.google.android.glass.TouchEnabledApplication"
         android:value="true" />
 
-    <activity android:name="com.example.android.glass.cardsample.MainActivity">
+    <activity
+        android:name="com.example.android.glass.cardsample.MainActivity"
+        android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
 
@@ -49,7 +51,8 @@
     </activity>
     <activity
         android:name="com.example.android.glass.cardsample.menu.MenuActivity"
-        android:theme="@style/MenuTheme">
+        android:theme="@style/MenuTheme"
+        android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
 

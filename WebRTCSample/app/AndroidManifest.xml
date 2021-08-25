@@ -9,7 +9,7 @@
         android:glEsVersion="0x00020000"
         android:required="true" />
 
-    <uses-sdk android:targetSdkVersion="28" />
+    <uses-sdk android:targetSdkVersion="30" />
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
