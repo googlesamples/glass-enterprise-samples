@@ -43,7 +43,9 @@
         android:name="com.google.android.glass.TouchEnabledApplication"
         android:value="true" />
 
-    <activity android:name="com.example.glass.qrcodescannersample.MainActivity">
+    <activity
+        android:name="com.example.glass.qrcodescannersample.MainActivity"
+        android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
 
@@ -54,7 +56,9 @@
         <category android:name="com.google.android.glass.category.DIRECTORY" />
       </intent-filter>
     </activity>
-    <activity android:name="com.example.glass.qrcodescannersample.CameraActivity">
+    <activity
+        android:name="com.example.glass.qrcodescannersample.CameraActivity"
+        android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
 

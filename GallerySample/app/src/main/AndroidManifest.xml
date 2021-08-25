@@ -43,7 +43,9 @@
         android:name="com.google.android.glass.TouchEnabledApplication"
         android:value="true" />
 
-    <activity android:name=".MainActivity">
+    <activity
+        android:name=".MainActivity"
+        android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
 
@@ -54,8 +56,10 @@
         <category android:name="com.google.android.glass.category.DIRECTORY" />
       </intent-filter>
     </activity>
-    <activity android:name=".menu.MenuActivity"
-        android:theme="@style/MenuTheme">
+    <activity
+        android:name=".menu.MenuActivity"
+        android:theme="@style/MenuTheme"
+        android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
 

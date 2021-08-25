@@ -35,7 +35,9 @@
         android:name="com.google.android.glass.TouchEnabledApplication"
         android:value="true" />
 
-    <activity android:name="com.example.glass.voicerecognitionsample.MainActivity">
+    <activity
+        android:name="com.example.glass.voicerecognitionsample.MainActivity"
+        android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
 
