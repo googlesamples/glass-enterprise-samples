@@ -11,15 +11,13 @@
 package org.appspot.apprtcstandalone;
 
 import android.os.Handler;
-import javax.annotation.Nullable;
 import android.util.Log;
-import de.tavendo.autobahn.WebSocket.WebSocketConnectionObserver;
-import de.tavendo.autobahn.WebSocketConnection;
-import de.tavendo.autobahn.WebSocketException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import io.crossbar.autobahn.websocket.WebSocketConnection;
+import io.crossbar.autobahn.websocket.WebSocketConnectionHandler;
+import io.crossbar.autobahn.websocket.exceptions.WebSocketException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 import org.appspot.apprtcstandalone.util.AsyncHttpURLConnection;
 import org.appspot.apprtcstandalone.util.AsyncHttpURLConnection.AsyncHttpEvents;
 import org.json.JSONException;
@@ -47,7 +45,7 @@ public class WebSocketChannelClient {
   private WebSocketConnectionState state;
   // Do not remove this member variable. If this is removed, the observer gets garbage collected and
   // this causes test breakages.
-  private WebSocketObserver wsObserver;
+  private WebSocketConnectionHandler wsHandler;
   private final Object closeEventLock = new Object();
   private boolean closeEvent;
   // WebSocket send queue. Messages are added to the queue when WebSocket
@@ -93,11 +91,9 @@ public class WebSocketChannelClient {
 
     Log.d(TAG, "Connecting WebSocket to: " + wsUrl + ". Post URL: " + postUrl);
     ws = new WebSocketConnection();
-    wsObserver = new WebSocketObserver();
+    wsHandler =  new WebSocketObserver();
     try {
-      ws.connect(new URI(wsServerUrl), wsObserver);
-    } catch (URISyntaxException e) {
-      reportError("URI error: " + e.getMessage());
+      ws.connect(wsServerUrl, wsHandler);
     } catch (WebSocketException e) {
       reportError("WebSocket connection error: " + e.getMessage());
     }
@@ -118,7 +114,7 @@ public class WebSocketChannelClient {
       json.put("roomid", roomID);
       json.put("clientid", clientID);
       Log.d(TAG, "C->WSS: " + json.toString());
-      ws.sendTextMessage(json.toString());
+      ws.sendMessage(json.toString());
       state = WebSocketConnectionState.REGISTERED;
       // Send any previously accumulated messages.
       for (String sendMessage : wsSendQueue) {
@@ -151,7 +147,7 @@ public class WebSocketChannelClient {
           json.put("msg", message);
           message = json.toString();
           Log.d(TAG, "C->WSS: " + message);
-          ws.sendTextMessage(message);
+          ws.sendMessage(message);
         } catch (JSONException e) {
           reportError("WebSocket send JSON error: " + e.getMessage());
         }
@@ -178,7 +174,7 @@ public class WebSocketChannelClient {
     }
     // Close WebSocket in CONNECTED or ERROR states only.
     if (state == WebSocketConnectionState.CONNECTED || state == WebSocketConnectionState.ERROR) {
-      ws.disconnect();
+      ws.sendClose();
       state = WebSocketConnectionState.CLOSED;
 
       // Wait for websocket close event to prevent websocket library from
@@ -237,7 +233,7 @@ public class WebSocketChannelClient {
     }
   }
 
-  private class WebSocketObserver implements WebSocketConnectionObserver {
+  private class WebSocketObserver extends WebSocketConnectionHandler {
     @Override
     public void onOpen() {
       Log.d(TAG, "WebSocket connection opened to: " + wsServerUrl);
@@ -254,7 +250,7 @@ public class WebSocketChannelClient {
     }
 
     @Override
-    public void onClose(WebSocketCloseNotification code, String reason) {
+    public void onClose(int code, String reason) {
       Log.d(TAG, "WebSocket connection closed. Code: " + code + ". Reason: " + reason + ". State: "
               + state);
       synchronized (closeEventLock) {
@@ -273,7 +269,7 @@ public class WebSocketChannelClient {
     }
 
     @Override
-    public void onTextMessage(String payload) {
+    public void onMessage(String payload) {
       Log.d(TAG, "WSS->C: " + payload);
       final String message = payload;
       handler.post(new Runnable() {
@@ -286,11 +282,5 @@ public class WebSocketChannelClient {
         }
       });
     }
-
-    @Override
-    public void onRawTextMessage(byte[] payload) {}
-
-    @Override
-    public void onBinaryMessage(byte[] payload) {}
   }
 }
