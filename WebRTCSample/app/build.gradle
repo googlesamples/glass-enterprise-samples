@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 33
     //buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "org.appspot.apprtcstandalone"
         minSdkVersion 27
-        targetSdkVersion 28
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -43,7 +43,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation fileTree(dir: 'third_party/autobanh/lib', include: ['autobanh.jar'])
+    implementation 'io.crossbar.autobahn:autobahn-android:21.7.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.example.glass.ui:gesture-lib-sample:0.1.0-SNAPSHOT'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
