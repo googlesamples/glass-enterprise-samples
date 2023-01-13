@@ -1,0 +1,91 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 31
+
+    defaultConfig {
+        applicationId "com.google.mlkit.vision.automl.demo"
+        minSdkVersion 19
+        multiDexEnabled true
+        targetSdkVersion 31
+        // Version code for next release (version 9 is now in Play Store)
+        versionCode 11
+        versionName "1.11"
+        vectorDrawables.useSupportLibrary = true
+        setProperty("archivesBaseName", "vision-automl-remote-model-quickstart")
+    }
+    buildTypes {
+        proguard {
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard.cfg'
+            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro', 'proguard.cfg'
+        }
+        testBuildType "proguard"
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // Do NOT compress tflite model files (need to call out to developers!)
+    aaptOptions {
+        noCompress "tflite"
+    }
+
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "4g"
+    }
+}
+
+repositories {
+    // Depending on AndroidX Snapshot Builds to get the latest CameraX libs.
+    maven { url 'https://androidx.dev/snapshots/builds/6787662/artifacts/repository/' }
+}
+
+dependencies {
+    // Image labeling with AutoML model support
+    implementation 'com.google.mlkit:image-labeling-custom:17.0.1'
+    // Or comment the dependency above and uncomment the dependency below to
+    // use unbundled model that depends on Google Play Services
+    // implementation 'com.google.android.gms:play-services-mlkit-image-labeling-custom:16.0.0-beta3'
+
+    implementation 'com.google.mlkit:object-detection-custom:17.0.0'
+    implementation 'com.google.mlkit:linkfirebase:17.0.0'
+
+    implementation 'androidx.multidex:multidex:2.0.1'
+    // -------------------------------------------------------
+
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.guava:guava:27.1-android'
+
+    // ViewModel and LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata:2.3.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:2.3.1"
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.annotation:annotation:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+
+    // CameraX
+    implementation "androidx.camera:camera-camera2:1.0.0-SNAPSHOT"
+    implementation "androidx.camera:camera-lifecycle:1.0.0-SNAPSHOT"
+    implementation "androidx.camera:camera-view:1.0.0-SNAPSHOT"
+}
+
+configurations {
+    // Resolves dependency conflict caused by some dependencies use
+    // com.google.guava:guava and com.google.guava:listenablefuture together.
+    all*.exclude group: 'com.google.guava', module: 'listenablefuture'
+}

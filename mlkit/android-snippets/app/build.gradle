@@ -1,0 +1,62 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 31
+
+    defaultConfig {
+        applicationId "com.google.example.mlkit"
+        minSdkVersion 19
+        targetSdkVersion 31
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/androidx.exifinterface_exifinterface.version'
+        exclude 'META-INF/proguard/androidx-annotations.pro'
+    }
+}
+
+dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.exifinterface:exifinterface:1.3.3'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // Add this dependency and multiDexEnabled = true in your defaultConfig to solve the error:
+    // Cannot fit requested classes in a single dex file
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+    // ML Kit related dependencies
+
+    // Barcode model
+    implementation 'com.google.mlkit:barcode-scanning:17.0.2'
+
+    // Object detection and tracking features
+    implementation 'com.google.mlkit:object-detection:17.0.0'
+    implementation 'com.google.mlkit:object-detection-custom:17.0.0'
+
+    // Face features
+    implementation 'com.google.android.gms:play-services-mlkit-face-detection:17.0.1'
+
+    // Text features
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:18.0.0'
+
+    // Image labeling
+    implementation 'com.google.mlkit:image-labeling:17.0.7'
+
+    // Language Identification
+    implementation 'com.google.mlkit:language-id:17.0.3'
+
+    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+}

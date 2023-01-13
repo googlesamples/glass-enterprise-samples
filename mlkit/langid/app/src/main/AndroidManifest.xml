@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.google.mlkit.samples.nl.languageid"
+    tools:overrideLibrary="com.google.android.gms.base">
+
+  <application
+      android:allowBackup="true"
+      android:icon="@drawable/logo_mlkit"
+      android:label="@string/app_name"
+      android:theme="@style/AppTheme">
+
+    <!-- Optional: Add it to automatically download ML model to device after
+      your app is installed.-->
+    <meta-data
+        android:name="com.google.mlkit.vision.DEPENDENCIES"
+        android:value="langid"/>
+
+    <activity
+        android:name=".EntryChoiceActivity"
+        android:exported="true">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+
+    <activity
+        android:name=".java.MainActivityJava"
+        android:exported="true" />
+
+    <activity
+        android:name=".kotlin.MainActivityKotlin"
+        android:exported="true" />
+
+  </application>
+</manifest>
