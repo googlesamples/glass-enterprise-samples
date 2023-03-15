@@ -1,3 +1,13 @@
+# March 15, 2023 Update
+
+As of March 15, 2023, we will no longer sell Glass Enterprise Edition.  We
+will continue supporting Glass Enterprise Edition until September 15, 2023.
+This repository has been archived and remains as a historical reference for
+developers who actively maintain apps built for Glass Enterprise Edition.
+For more information, visit the Glass Enterprise
+[developers site](https://developers.google.com/glass-enterprise) and
+[Help Center](https://support.google.com/glass-enterprise/customer).
+
 # Glass Samples
 
 This repository contains sample code for Google [Glass Enterprise Edition 2](https://developers.google.com/glass-enterprise) (EE2). This repository is provided for example purposes only.
