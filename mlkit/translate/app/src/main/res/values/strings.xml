@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">MLKit-Translate</string>
+  <string name="translated_text_hint">Translated text</string>
+  <string name="downloaded_models_label">Downloaded models: %1$s</string>
+  <string name="translate_progress">Translating&#8230;</string>
+  <string name="delete_model">Delete Model</string>
+  <string name="download_model">Download Model</string>
+  <string name="unknown_error">Unknown error occurred.</string>
+  <string name="source_text_hint">Source text</string>
+</resources>
